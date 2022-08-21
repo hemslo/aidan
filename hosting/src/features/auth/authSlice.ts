@@ -5,12 +5,14 @@ export interface AuthState {
     clientId: string;
     clientSecret: string;
     projectId: string;
+    code: string;
 }
 
 const initialState: AuthState = {
     clientId: '',
     clientSecret: '',
     projectId: '',
+    code: '',
 };
 
 
@@ -27,10 +29,13 @@ export const authSlice = createSlice({
         updateProjectId: (state, action: PayloadAction<string>) => {
             state.projectId = action.payload;
         },
+        updateCode: (state, action: PayloadAction<string>) => {
+            state.code = action.payload;
+        }
     },
 });
 
-export const { updateClientId, updateClientSecret, updateProjectId } = authSlice.actions;
+export const { updateClientId, updateClientSecret, updateProjectId, updateCode } = authSlice.actions;
 
 export const selectClientId = (state: RootState) => state.auth.clientId;
 

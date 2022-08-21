@@ -1,3 +1,6 @@
+import {
+    useLocation
+} from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
@@ -8,11 +11,13 @@ import {
     selectProjectId,
     updateClientId,
     updateClientSecret,
+    updateCode,
     updateProjectId,
 } from './authSlice';
+import { useEffect } from 'react';
 
-const OAUTH_SCOPE = "https://www.googleapis.com/auth/sdm.service";
-const OAUTH_ENDPOINT = "https://nestservices.google.com/partnerconnections/";
+const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
+const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
 
 export function Auth() {
     const clientId = useAppSelector(selectClientId);
@@ -20,8 +25,15 @@ export function Auth() {
     const projectId = useAppSelector(selectProjectId);
     const dispatch = useAppDispatch();
 
+    const { search } = useLocation();
+
+    useEffect(() => {
+        const params = new URLSearchParams(search);
+        dispatch(updateCode(params.get('code') || ''));
+    }, [search]);
+
     const redirectURI = window.location.origin + '/auth';
-    const oauthEndpoint = OAUTH_ENDPOINT + projectId + "/auth";
+    const oauthEndpoint = OAUTH_ENDPOINT + projectId + '/auth';
     const params = {
         'access_type': 'offline',
         'client_id': clientId,
