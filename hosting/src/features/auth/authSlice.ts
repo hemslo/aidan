@@ -73,4 +73,10 @@ export const selectProjectId = (state: RootState) => state.auth.projectId;
 
 export const selectCode = (state: RootState) => state.auth.code;
 
+export const selectAccessToken = (state: RootState) => state.auth.access_token;
+
+export const selectRefreshToken = (state: RootState) => state.auth.refresh_token;
+
+export const selectExpiresAt = (state: RootState) => new Date(state.auth.expires_at);
+
 export default authSlice.reducer;

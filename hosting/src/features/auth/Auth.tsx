@@ -7,10 +7,13 @@ import TextField from '@mui/material/TextField';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
     saveAuthState,
+    selectAccessToken,
     selectClientId,
     selectClientSecret,
     selectCode,
+    selectExpiresAt,
     selectProjectId,
+    selectRefreshToken,
     updateAccessToken,
     updateClientId,
     updateClientSecret,
@@ -28,6 +31,9 @@ export function Auth() {
     const clientSecret = useAppSelector(selectClientSecret);
     const projectId = useAppSelector(selectProjectId);
     const code = useAppSelector(selectCode);
+    const accessToken = useAppSelector(selectAccessToken);
+    const refreshToken = useAppSelector(selectRefreshToken);
+    const expiresAt = useAppSelector(selectExpiresAt);
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -59,20 +65,23 @@ export function Auth() {
     }, [data, dispatch, navigate]);
 
     return (
-        <Stack>
+        <Stack spacing={2}>
             <TextField
+                fullWidth
                 placeholder="GCP Client Id"
                 label="GCP Client Id"
                 value={clientId}
                 onChange={(e) => dispatch(updateClientId(e.target.value))}
             />
             <TextField
+                fullWidth
                 placeholder="GCP Client Secret"
                 label="GCP Client Secret"
                 value={clientSecret}
                 onChange={(e) => dispatch(updateClientSecret(e.target.value))}
             />
             <TextField
+                fullWidth
                 placeholder="Device Access Project Id"
                 label="Device Access Project Id"
                 value={projectId}
@@ -89,6 +98,27 @@ export function Auth() {
                 <input type="hidden" name="state" value="pass-through value" />
                 <Button type="submit">Link</Button>
             </form>
+            <TextField
+                fullWidth
+                multiline
+                label="Access Token"
+                value={accessToken}
+                disabled
+            />
+            <TextField
+                fullWidth
+                multiline
+                label="Refresh Token"
+                value={refreshToken}
+                disabled
+            />
+            <TextField
+                fullWidth
+                multiline
+                label="Exprires At"
+                value={expiresAt.toISOString()}
+                disabled
+            />
         </Stack>
     );
 }
