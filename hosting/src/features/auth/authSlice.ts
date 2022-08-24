@@ -11,7 +11,7 @@ export interface AuthState {
     access_token: string;
     expires_at: number;
     refresh_token: string;
-}
+};
 
 const initialState: AuthState = {
     clientId: '',
@@ -27,9 +27,9 @@ export const saveAuthState = createAsyncThunk(
     'auth/saveState',
     async (_: string, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
-        saveState({auth: state.auth})
+        saveState({ auth: state.auth })
     }
-  );
+);
 
 export const authSlice = createSlice({
     name: 'auth',

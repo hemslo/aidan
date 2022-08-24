@@ -52,12 +52,12 @@ export function Auth() {
     const redirectUri = window.location.origin + '/auth';
     const oauthEndpoint = OAUTH_ENDPOINT + projectId + '/auth';
 
-    const { data: oAuth2AccessTokenResponse  } = useGetAccessTokenQuery({
+    const { data: oAuth2AccessTokenResponse } = useGetAccessTokenQuery({
         clientId,
         clientSecret,
         code,
         redirectUri,
-    }, { skip: !code || !clientId || !clientSecret || !redirectUri});
+    }, { skip: !code || !clientId || !clientSecret || !redirectUri });
 
     useEffect(() => {
         if (oAuth2AccessTokenResponse) {
@@ -72,13 +72,13 @@ export function Auth() {
             setNow(new Date());
         }, 60000);
         return () => clearInterval(interval);
-    } , []);
+    }, []);
 
     const { data: oAuth2RefreshTokenResponse } = useRefreshTokenQuery({
         clientId,
         clientSecret,
         refreshToken,
-    }, { skip: !refreshToken || !clientId || !clientSecret || expiresAt.getTime() - now.getTime() > REFRESH_THRESHOLD});
+    }, { skip: !refreshToken || !clientId || !clientSecret || expiresAt.getTime() - now.getTime() > REFRESH_THRESHOLD });
 
     useEffect(() => {
         if (oAuth2RefreshTokenResponse) {
@@ -144,4 +144,4 @@ export function Auth() {
             />
         </Stack>
     );
-}
+};

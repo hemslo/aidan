@@ -4,6 +4,7 @@ import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { Auth } from './features/auth/Auth';
+import { Camera } from './features/camera/Camera';
 
 function App() {
   return (
@@ -20,6 +21,9 @@ function App() {
         <Grid container spacing={2} >
           <Grid item xs={12}>
             <Auth />
+          </Grid>
+          <Grid item xs={12}>
+            <Camera />
           </Grid>
         </Grid>
       </Box>
