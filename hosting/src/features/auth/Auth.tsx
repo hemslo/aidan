@@ -19,12 +19,14 @@ import {
     updateClientSecret,
     updateCode,
     updateProjectId,
+    updateRefreshToken,
 } from './authSlice';
-import { useEffect } from 'react';
-import { useGetAccessTokenQuery } from './oauth2Api';
+import { useEffect, useState } from 'react';
+import { useGetAccessTokenQuery, useRefreshTokenQuery } from './oauth2Api';
 
 const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
 const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
+const REFRESH_THRESHOLD = 1000 * 60 * 5;
 
 export function Auth() {
     const clientId = useAppSelector(selectClientId);
@@ -34,6 +36,7 @@ export function Auth() {
     const accessToken = useAppSelector(selectAccessToken);
     const refreshToken = useAppSelector(selectRefreshToken);
     const expiresAt = useAppSelector(selectExpiresAt);
+    const [now, setNow] = useState(new Date());
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -49,7 +52,7 @@ export function Auth() {
     const redirectUri = window.location.origin + '/auth';
     const oauthEndpoint = OAUTH_ENDPOINT + projectId + '/auth';
 
-    const { data } = useGetAccessTokenQuery({
+    const { data: oAuth2AccessTokenResponse  } = useGetAccessTokenQuery({
         clientId,
         clientSecret,
         code,
@@ -57,12 +60,32 @@ export function Auth() {
     }, { skip: !code || !clientId || !clientSecret || !redirectUri});
 
     useEffect(() => {
-        if (data) {
-            dispatch(updateAccessToken(data))
+        if (oAuth2AccessTokenResponse) {
+            dispatch(updateAccessToken(oAuth2AccessTokenResponse))
             dispatch(saveAuthState(''));
             navigate('/');
         }
-    }, [data, dispatch, navigate]);
+    }, [oAuth2AccessTokenResponse, dispatch, navigate]);
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setNow(new Date());
+        }, 60000);
+        return () => clearInterval(interval);
+    } , []);
+
+    const { data: oAuth2RefreshTokenResponse } = useRefreshTokenQuery({
+        clientId,
+        clientSecret,
+        refreshToken,
+    }, { skip: !refreshToken || !clientId || !clientSecret || expiresAt.getTime() - now.getTime() > REFRESH_THRESHOLD});
+
+    useEffect(() => {
+        if (oAuth2RefreshTokenResponse) {
+            dispatch(updateRefreshToken(oAuth2RefreshTokenResponse))
+            dispatch(saveAuthState(''));
+        }
+    }, [oAuth2RefreshTokenResponse, dispatch]);
 
     return (
         <Stack spacing={2}>

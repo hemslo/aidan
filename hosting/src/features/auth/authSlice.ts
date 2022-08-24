@@ -53,7 +53,7 @@ export const authSlice = createSlice({
             state.refresh_token = action.payload.refresh_token;
             state.expires_at = Date.now() + action.payload.expires_in * 1000;
         },
-        refreshToken: (state, action: PayloadAction<OAuth2RefreshTokenResponse>) => {
+        updateRefreshToken: (state, action: PayloadAction<OAuth2RefreshTokenResponse>) => {
             state.code = '';
             state.access_token = action.payload.access_token;
             state.expires_at = Date.now() + action.payload.expires_in * 1000;
@@ -61,7 +61,7 @@ export const authSlice = createSlice({
     },
 });
 
-export const { updateClientId, updateClientSecret, updateProjectId, updateCode, updateAccessToken, refreshToken } = authSlice.actions;
+export const { updateClientId, updateClientSecret, updateProjectId, updateCode, updateAccessToken, updateRefreshToken } = authSlice.actions;
 
 export const selectAuth = (state: RootState) => state.auth;
 
