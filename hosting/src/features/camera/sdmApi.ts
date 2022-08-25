@@ -12,6 +12,20 @@ export interface ListDevicesResponse {
   devices: Device[]
 };
 
+export interface GenerateWebRtcStreamResponse {
+  results: {
+    answerSdp: string,
+    expiresAt : string,
+    mediaSessionId : string,
+  }
+}
+
+export interface GenerateWebRtcStreamRequest {
+  projectId: string,
+  deviceId: string,
+  offerSdp: string,
+}
+
 export const sdmApi = createApi({
   reducerPath: 'sdm',
   baseQuery: fetchBaseQuery({
@@ -26,12 +40,24 @@ export const sdmApi = createApi({
   }),
   endpoints: (builder) => ({
     listDevices: builder.query<ListDevicesResponse, string>({
-      query: (parent: string) => ({
-        url: `enterprises/${parent}/devices`,
+      query: (projectId: string) => ({
+        url: `enterprises/${projectId}/devices`,
         method: 'GET',
+      }),
+    }),
+    generateWebRtcStream: builder.query<GenerateWebRtcStreamResponse, GenerateWebRtcStreamRequest>({
+      query: (request: GenerateWebRtcStreamRequest) => ({
+        url: `enterprises/${request.projectId}/devices/${request.deviceId}:executeCommand`,
+        method: 'POST',
+        body: {
+          command: "sdm.devices.commands.CameraLiveStream.GenerateWebRtcStream",
+          params: {
+            offerSdp: request.offerSdp,
+          },
+        },
       }),
     }),
   }),
 });
 
-export const { useListDevicesQuery } = sdmApi;
+export const { useListDevicesQuery, useGenerateWebRtcStreamQuery } = sdmApi;

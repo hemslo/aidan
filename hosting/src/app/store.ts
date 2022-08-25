@@ -15,7 +15,7 @@ export const store = configureStore({
     [oauth2Api.reducerPath]: oauth2Api.reducer,
     [sdmApi.reducerPath]: sdmApi.reducer,
   },
-  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(oauth2Api.middleware),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(oauth2Api.middleware).concat(sdmApi.middleware),
   preloadedState: persistedState,
 });
 
