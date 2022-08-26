@@ -6,8 +6,8 @@ import { useCallback } from "react";
 import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectAccessToken, selectProjectId } from "../auth/authSlice";
-import { selectDeviceId, updateDeviceId } from "./cameraSlice";
-import { ListDevicesResponse, useGenerateWebRtcStreamQuery, useListDevicesQuery } from "./sdmApi";
+import { selectDeviceId, selectMediaSessionId, updateDeviceId, updateMediaSessionId } from "./cameraSlice";
+import { ListDevicesResponse, useExtendWebRtcStreamQuery, useGenerateWebRtcStreamQuery, useListDevicesQuery } from "./sdmApi";
 import { WebRTC } from "./webrtc";
 
 const getCameraDeviceId = (response?: ListDevicesResponse) => {
@@ -26,6 +26,7 @@ export function Camera() {
     const projectId = useAppSelector(selectProjectId);
     const accessToken = useAppSelector(selectAccessToken);
     const deviceId = useAppSelector(selectDeviceId);
+    const mediaSessionId = useAppSelector(selectMediaSessionId);
     const dispatch = useAppDispatch();
     const { data: listDevicesResponse } = useListDevicesQuery(projectId, { skip: !projectId || !accessToken });
 
@@ -55,13 +56,28 @@ export function Camera() {
         projectId,
         deviceId,
         offerSdp: webRTC.current.offer?.sdp!
-    }, { skip: !projectId || !deviceId || !webRTC.current.offer || !accessToken });
+    }, {
+        skip: !projectId || !deviceId || !webRTC.current.offer || !accessToken,
+    });
+
+    useExtendWebRtcStreamQuery({
+        projectId,
+        deviceId,
+        mediaSessionId,
+    }, {
+        skip: !projectId || !deviceId || !mediaSessionId || !accessToken,
+        pollingInterval: 60 * 1000,
+    })
 
     useEffect(() => {
-        if (generateWebRtcStreamResponse) {
-            webRTC.current.updateWebRTC(generateWebRtcStreamResponse.results.answerSdp);
-        }
-    }, [generateWebRtcStreamResponse, webRTC])
+        const handleGenerateWebRtcStreamResponse = async () => {
+            if (generateWebRtcStreamResponse) {
+                await webRTC.current.updateWebRTC(generateWebRtcStreamResponse.results.answerSdp);
+                dispatch(updateMediaSessionId(generateWebRtcStreamResponse.results.mediaSessionId));
+            }
+        };
+        handleGenerateWebRtcStreamResponse();
+    }, [generateWebRtcStreamResponse, webRTC, dispatch])
 
     return (
         <Card>

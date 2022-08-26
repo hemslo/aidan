@@ -6,13 +6,12 @@ const localOfferOptions = {
 const servers = { 'sdpSemantics': 'unified-plan', 'iceServers': [] };
 
 export class WebRTC {
-    localPeerConnection: RTCPeerConnection;
+    initialised = false;
+    localPeerConnection = new RTCPeerConnection(servers);
     offer?: RTCSessionDescriptionInit;
     rtcTrackEventHandler: (event: RTCTrackEvent) => void;
-    initialised = false;
 
     constructor(rtcTrackEventHandler: (event: RTCTrackEvent) => void) {
-        this.localPeerConnection = new RTCPeerConnection(servers);
         this.rtcTrackEventHandler = rtcTrackEventHandler;
     }
 
@@ -31,8 +30,8 @@ export class WebRTC {
         this.offer = offer;
     }
 
-    async updateWebRTC(answerSDP: string) {
-        await this.localPeerConnection.setRemoteDescription({ "type": "answer", "sdp": answerSDP })
+    async updateWebRTC(answerSdp: string) {
+        await this.localPeerConnection.setRemoteDescription({ "type": "answer", "sdp": answerSdp })
     }
 
     handleIceConnectionStateChange = (event: Event) => {

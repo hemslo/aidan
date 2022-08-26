@@ -18,13 +18,26 @@ export interface GenerateWebRtcStreamResponse {
     expiresAt : string,
     mediaSessionId : string,
   }
-}
+};
 
 export interface GenerateWebRtcStreamRequest {
   projectId: string,
   deviceId: string,
   offerSdp: string,
-}
+};
+
+export interface ExtendWebRtcStreamResponse {
+  results: {
+    expiresAt: string,
+    mediaSessionId: string,
+  }
+};
+
+export interface ExtendWebRtcStreamRequest {
+  projectId: string,
+  deviceId: string,
+  mediaSessionId: string,
+};
 
 export const sdmApi = createApi({
   reducerPath: 'sdm',
@@ -57,7 +70,19 @@ export const sdmApi = createApi({
         },
       }),
     }),
+    extendWebRtcStream: builder.query<ExtendWebRtcStreamResponse, ExtendWebRtcStreamRequest>({
+      query: (request: ExtendWebRtcStreamRequest) => ({
+        url: `enterprises/${request.projectId}/devices/${request.deviceId}:executeCommand`,
+        method: 'POST',
+        body: {
+          command: "sdm.devices.commands.CameraLiveStream.ExtendWebRtcStream",
+          params: {
+            mediaSessionId: request.mediaSessionId,
+          },
+        },
+      }),
+    }),
   }),
 });
 
-export const { useListDevicesQuery, useGenerateWebRtcStreamQuery } = sdmApi;
+export const { useListDevicesQuery, useGenerateWebRtcStreamQuery, useExtendWebRtcStreamQuery } = sdmApi;
