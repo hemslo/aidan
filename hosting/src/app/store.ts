@@ -1,7 +1,7 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit';
-import authReducer from '../features/auth/authSlice';
+import oauth2Reducer from '../features/oauth2/authSlice';
 import cameraReducer from '../features/camera/cameraSlice';
-import { oauth2Api } from '../features/auth/oauth2Api';
+import { oauth2Api } from '../features/oauth2/oauth2Api';
 import { setupListeners } from '@reduxjs/toolkit/dist/query';
 import { loadState } from '../localstorage';
 import { sdmApi } from '../features/camera/sdmApi';
@@ -10,7 +10,7 @@ const persistedState = loadState();
 
 export const store = configureStore({
   reducer: {
-    auth: authReducer,
+    oauth2: oauth2Reducer,
     camera: cameraReducer,
     [oauth2Api.reducerPath]: oauth2Api.reducer,
     [sdmApi.reducerPath]: sdmApi.reducer,

@@ -3,7 +3,7 @@ import { RootState } from '../../app/store';
 import { saveState } from '../../localstorage';
 import { OAuth2AccessTokenResponse, OAuth2RefreshTokenResponse } from './oauth2Api';
 
-export interface AuthState {
+export interface OAuth2State {
     clientId: string;
     clientSecret: string;
     projectId: string;
@@ -13,7 +13,7 @@ export interface AuthState {
     refresh_token: string;
 };
 
-const initialState: AuthState = {
+const initialState: OAuth2State = {
     clientId: '',
     clientSecret: '',
     projectId: '',
@@ -23,15 +23,15 @@ const initialState: AuthState = {
     expires_at: 0,
 };
 
-export const saveAuthState = createAsyncThunk(
-    'auth/saveState',
+export const saveOAuth2State = createAsyncThunk(
+    'oauth2/saveState',
     async (_: string, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
-        saveState({ auth: state.auth })
+        saveState({ auth: state.oauth2 })
     }
 );
 
-export const authSlice = createSlice({
+export const oauth2Slice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
@@ -61,22 +61,22 @@ export const authSlice = createSlice({
     },
 });
 
-export const { updateClientId, updateClientSecret, updateProjectId, updateCode, updateAccessToken, updateRefreshToken } = authSlice.actions;
+export const { updateClientId, updateClientSecret, updateProjectId, updateCode, updateAccessToken, updateRefreshToken } = oauth2Slice.actions;
 
-export const selectAuth = (state: RootState) => state.auth;
+export const selectAuth = (state: RootState) => state.oauth2;
 
-export const selectClientId = (state: RootState) => state.auth.clientId;
+export const selectClientId = (state: RootState) => state.oauth2.clientId;
 
-export const selectClientSecret = (state: RootState) => state.auth.clientSecret;
+export const selectClientSecret = (state: RootState) => state.oauth2.clientSecret;
 
-export const selectProjectId = (state: RootState) => state.auth.projectId;
+export const selectProjectId = (state: RootState) => state.oauth2.projectId;
 
-export const selectCode = (state: RootState) => state.auth.code;
+export const selectCode = (state: RootState) => state.oauth2.code;
 
-export const selectAccessToken = (state: RootState) => state.auth.access_token;
+export const selectAccessToken = (state: RootState) => state.oauth2.access_token;
 
-export const selectRefreshToken = (state: RootState) => state.auth.refresh_token;
+export const selectRefreshToken = (state: RootState) => state.oauth2.refresh_token;
 
-export const selectExpiresAt = (state: RootState) => new Date(state.auth.expires_at);
+export const selectExpiresAt = (state: RootState) => new Date(state.oauth2.expires_at);
 
-export default authSlice.reducer;
+export default oauth2Slice.reducer;

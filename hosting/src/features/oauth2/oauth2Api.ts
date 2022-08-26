@@ -29,7 +29,7 @@ export interface OAuth2RefreshTokenResponse {
 };
 
 export const oauth2Api = createApi({
-  reducerPath: 'oauth2',
+  reducerPath: 'oauth2api',
   baseQuery: fetchBaseQuery({ baseUrl: 'https://www.googleapis.com/oauth2/v4/' }),
   endpoints: (builder) => ({
     getAccessToken: builder.query<OAuth2AccessTokenResponse, OAuth2AccessTokenRequest>({

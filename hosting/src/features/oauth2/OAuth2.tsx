@@ -6,7 +6,7 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
-    saveAuthState,
+    saveOAuth2State,
     selectAccessToken,
     selectClientId,
     selectClientSecret,
@@ -28,7 +28,7 @@ const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
 const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
 const REFRESH_THRESHOLD = 1000 * 60 * 5;
 
-export function Auth() {
+export function OAuth2() {
     const clientId = useAppSelector(selectClientId);
     const clientSecret = useAppSelector(selectClientSecret);
     const projectId = useAppSelector(selectProjectId);
@@ -62,7 +62,7 @@ export function Auth() {
     useEffect(() => {
         if (oAuth2AccessTokenResponse) {
             dispatch(updateAccessToken(oAuth2AccessTokenResponse))
-            dispatch(saveAuthState(''));
+            dispatch(saveOAuth2State(''));
             navigate('/');
         }
     }, [oAuth2AccessTokenResponse, dispatch, navigate]);
@@ -83,7 +83,7 @@ export function Auth() {
     useEffect(() => {
         if (oAuth2RefreshTokenResponse) {
             dispatch(updateRefreshToken(oAuth2RefreshTokenResponse))
-            dispatch(saveAuthState(''));
+            dispatch(saveOAuth2State(''));
         }
     }, [oAuth2RefreshTokenResponse, dispatch]);
 
@@ -110,7 +110,7 @@ export function Auth() {
                 value={projectId}
                 onChange={(e) => dispatch(updateProjectId(e.target.value))}
             />
-            <form method="GET" action={oauthEndpoint} onSubmit={() => dispatch(saveAuthState(''))}>
+            <form method="GET" action={oauthEndpoint} onSubmit={() => dispatch(saveOAuth2State(''))}>
                 <input type="hidden" name="access_type" value="offline" />
                 <input type="hidden" name="client_id" value={clientId} />
                 <input type="hidden" name="include_granted_scopes" value="true" />

@@ -40,11 +40,11 @@ export interface ExtendWebRtcStreamRequest {
 };
 
 export const sdmApi = createApi({
-  reducerPath: 'sdm',
+  reducerPath: 'sdmapi',
   baseQuery: fetchBaseQuery({
     baseUrl: 'https://smartdevicemanagement.googleapis.com/v1/',
     prepareHeaders: (headers, { getState }) => {
-      const token = (getState() as RootState).auth.access_token;
+      const token = (getState() as RootState).oauth2.access_token;
       if (token) {
         headers.set('Authorization', `Bearer ${token}`)
       }
