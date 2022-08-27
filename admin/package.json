@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "tsc": "tsc",
-    "addUser": "ts-node ./addUser.ts"
+    "addUser": "ts-node ./addUser.ts",
+    "setClaims": "ts-node ./setClaims.ts"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",

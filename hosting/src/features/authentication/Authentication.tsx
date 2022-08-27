@@ -11,14 +11,14 @@ import { useAuth, useSigninCheck } from 'reactfire';
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 
 export const AuthWrapper = ({ children, fallback }: React.PropsWithChildren<{ fallback: JSX.Element }>): JSX.Element => {
-  const { status, data: signInCheckResult } = useSigninCheck();
+  const { status, data: signInCheckResult } = useSigninCheck({ requiredClaims: { viewer: 'true'} });
 
   if (!children) {
     throw new Error('Children must be provided');
   }
   if (status === 'loading') {
     return <CircularProgress />
-  } else if (signInCheckResult.signedIn) {
+  } else if (signInCheckResult.signedIn && signInCheckResult.hasRequiredClaims) {
     return children as JSX.Element;
   }
 
@@ -95,16 +95,18 @@ const SignInForm = () => {
 };
 
 export function Authentication() {
-  const { status, data: signinResult } = useSigninCheck();
+  const { status, data: signinResult } = useSigninCheck({ requiredClaims: { viewer: 'true'} });
 
   if (status === 'loading') {
     return <></>;
   }
 
-  const { signedIn } = signinResult;
+  const { signedIn, hasRequiredClaims } = signinResult;
 
   if (!signedIn) {
     return <SignInForm />;
+  } else if (!hasRequiredClaims) {
+    return <div>No enough permission, please contact admin.</div>
   } else {
     return <></>;
   }

@@ -23,6 +23,7 @@ import {
 } from './authSlice';
 import { useEffect, useState } from 'react';
 import { useGetAccessTokenQuery, useRefreshTokenQuery } from './oauth2Api';
+import { useSigninCheck } from 'reactfire';
 
 const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
 const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
@@ -87,61 +88,65 @@ export function OAuth2() {
         }
     }, [oAuth2RefreshTokenResponse, dispatch]);
 
-    return (
-        <Stack spacing={2}>
-            <TextField
-                fullWidth
-                placeholder="GCP Client Id"
-                label="GCP Client Id"
-                value={clientId}
-                onChange={(e) => dispatch(updateClientId(e.target.value))}
-            />
-            <TextField
-                fullWidth
-                placeholder="GCP Client Secret"
-                label="GCP Client Secret"
-                value={clientSecret}
-                onChange={(e) => dispatch(updateClientSecret(e.target.value))}
-            />
-            <TextField
-                fullWidth
-                placeholder="Device Access Project Id"
-                label="Device Access Project Id"
-                value={projectId}
-                onChange={(e) => dispatch(updateProjectId(e.target.value))}
-            />
-            <form method="GET" action={oauthEndpoint} onSubmit={() => dispatch(saveOAuth2State(''))}>
-                <input type="hidden" name="access_type" value="offline" />
-                <input type="hidden" name="client_id" value={clientId} />
-                <input type="hidden" name="include_granted_scopes" value="true" />
-                <input type="hidden" name="prompt" value="consent" />
-                <input type="hidden" name="redirect_uri" value={redirectUri} />
-                <input type="hidden" name="response_type" value="code" />
-                <input type="hidden" name="scope" value={OAUTH_SCOPE} />
-                <input type="hidden" name="state" value="pass-through value" />
-                <Button type="submit">Link</Button>
-            </form>
-            <TextField
-                fullWidth
-                multiline
-                label="Access Token"
-                value={accessToken}
-                disabled
-            />
-            <TextField
-                fullWidth
-                multiline
-                label="Refresh Token"
-                value={refreshToken}
-                disabled
-            />
-            <TextField
-                fullWidth
-                multiline
-                label="Exprires At"
-                value={expiresAt.toISOString()}
-                disabled
-            />
-        </Stack>
-    );
+    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { admin: 'true' } });
+
+    return signInCheckResult && signInCheckResult.hasRequiredClaims
+        ? (
+            <Stack spacing={2}>
+                <TextField
+                    fullWidth
+                    placeholder="GCP Client Id"
+                    label="GCP Client Id"
+                    value={clientId}
+                    onChange={(e) => dispatch(updateClientId(e.target.value))}
+                />
+                <TextField
+                    fullWidth
+                    placeholder="GCP Client Secret"
+                    label="GCP Client Secret"
+                    value={clientSecret}
+                    onChange={(e) => dispatch(updateClientSecret(e.target.value))}
+                />
+                <TextField
+                    fullWidth
+                    placeholder="Device Access Project Id"
+                    label="Device Access Project Id"
+                    value={projectId}
+                    onChange={(e) => dispatch(updateProjectId(e.target.value))}
+                />
+                <form method="GET" action={oauthEndpoint} onSubmit={() => dispatch(saveOAuth2State(''))}>
+                    <input type="hidden" name="access_type" value="offline" />
+                    <input type="hidden" name="client_id" value={clientId} />
+                    <input type="hidden" name="include_granted_scopes" value="true" />
+                    <input type="hidden" name="prompt" value="consent" />
+                    <input type="hidden" name="redirect_uri" value={redirectUri} />
+                    <input type="hidden" name="response_type" value="code" />
+                    <input type="hidden" name="scope" value={OAUTH_SCOPE} />
+                    <input type="hidden" name="state" value="pass-through value" />
+                    <Button type="submit">Link</Button>
+                </form>
+                <TextField
+                    fullWidth
+                    multiline
+                    label="Access Token"
+                    value={accessToken}
+                    disabled
+                />
+                <TextField
+                    fullWidth
+                    multiline
+                    label="Refresh Token"
+                    value={refreshToken}
+                    disabled
+                />
+                <TextField
+                    fullWidth
+                    multiline
+                    label="Exprires At"
+                    value={expiresAt.toISOString()}
+                    disabled
+                />
+            </Stack>
+        )
+        : (<></>);
 };
