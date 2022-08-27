@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { useAuth, useSigninCheck } from 'reactfire';
-import { Auth, GoogleAuthProvider, signInWithPopup, User } from "firebase/auth";
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
+import Container from '@mui/material/Container';
+import GoogleIcon from '@mui/icons-material/Google';
+import { Auth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useAuth, useSigninCheck } from 'reactfire';
+import { useCallback } from 'react';
 
-const signOut = async (auth: Auth) => await auth.signOut();
-const signIn = async (auth: Auth) => {
+const signInWithGoogle = async (auth: Auth) => {
   const provider = new GoogleAuthProvider();
   await signInWithPopup(auth, provider);
 }
@@ -25,52 +26,33 @@ export const AuthWrapper = ({ children, fallback }: React.PropsWithChildren<{ fa
   return fallback;
 };
 
-type UserDetailsProps = {
-  user: User;
-}
-
-const UserDetails = ({ user }: UserDetailsProps) => {
-  const auth = useAuth();
-
-  return (
-    <>
-      <div title="Displayname">{user.displayName}</div>
-      <div title="Providers">
-        <ul>
-          {user.providerData?.map(profile => (
-            <li key={profile?.providerId}>{profile?.providerId}</li>
-          ))}
-        </ul>
-      </div>
-      <div title="Sign Out">
-        <Button onClick={() => signOut(auth)}>Sign Out</Button>
-      </div>
-    </>
-  );
-};
-
 const SignInForm = () => {
   const auth = useAuth();
+  const onSignInWithGoogle = useCallback(() => signInWithGoogle(auth), [auth]);
 
   return (
-    <div title="Sign-in form">
-      <Button onClick={() => signIn(auth)}>Sign in with Google</Button>
-    </div>
+    <Container>
+      <Button
+        startIcon={<GoogleIcon />}
+        onClick={onSignInWithGoogle}>
+        Sign in with Google
+      </Button>
+    </Container>
   );
 };
 
-export const Authentication = () => {
+export function Authentication() {
   const { status, data: signinResult } = useSigninCheck();
 
   if (status === 'loading') {
-    return <CircularProgress />;
+    return <></>;
   }
 
-  const { signedIn, user } = signinResult;
+  const { signedIn } = signinResult;
 
-  if (signedIn) {
-    return <UserDetails user={user} />;
-  } else {
+  if (!signedIn) {
     return <SignInForm />;
+  } else {
+    return <></>;
   }
 };

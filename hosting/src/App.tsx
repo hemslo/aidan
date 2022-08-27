@@ -1,13 +1,12 @@
-import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import { getAuth } from 'firebase/auth';
 import { AuthProvider, useFirebaseApp } from 'reactfire';
 import { OAuth2 } from './features/oauth2/OAuth2';
 import { Camera } from './features/camera/Camera';
 import { Authentication, AuthWrapper } from './features/authentication/Authentication';
+import { Navigation } from './features/navigation/Navigation';
 
 function App() {
   const firebaseApp = useFirebaseApp();
@@ -16,13 +15,7 @@ function App() {
   return (
     <AuthProvider sdk={auth}>
       <Box sx={{ display: 'flex' }}>
-        <AppBar component="nav">
-          <Toolbar>
-            <Typography variant="h3" component="div">
-              Aidan
-            </Typography>
-          </Toolbar>
-        </AppBar>
+        <Navigation />
         <Box component="main" sx={{ p: 3, width: 1 }}>
           <Toolbar />
           <Authentication />
