@@ -8,18 +8,23 @@ import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useAuth, useSigninCheck } from 'reactfire';
-import { useState, MouseEvent } from 'react';
+import { useState, MouseEvent, useCallback } from 'react';
 
 const UserMenu = () => {
     const auth = useAuth();
     const { status, data: signinResult } = useSigninCheck();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const handleMenu = (event: MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-      };
 
-    const handleClose = async () => {
+    const handleMenu = useCallback((event: MouseEvent<HTMLElement>) => {
+        setAnchorEl(event.currentTarget);
+    }, [setAnchorEl]);
+
+    const handleMenuClose = useCallback(() => {
+        setAnchorEl(null);
+    }, [setAnchorEl]);
+
+    const handleLogout = async () => {
         await auth.signOut();
         setAnchorEl(null);
     };
@@ -56,9 +61,9 @@ const UserMenu = () => {
                         horizontal: 'right',
                     }}
                     open={Boolean(anchorEl)}
-                    onClose={handleClose}
+                    onClose={handleMenuClose}
                 >
-                    <MenuItem onClick={handleClose}>Logout</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
                 </Menu>
             </div>);
     }
