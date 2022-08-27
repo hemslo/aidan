@@ -27,12 +27,12 @@ export const saveOAuth2State = createAsyncThunk(
     'oauth2/saveState',
     async (_: string, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
-        saveState({ auth: state.oauth2 })
+        saveState({ oauth2: state.oauth2 })
     }
 );
 
 export const oauth2Slice = createSlice({
-    name: 'auth',
+    name: 'oauth2',
     initialState,
     reducers: {
         updateClientId: (state, action: PayloadAction<string>) => {

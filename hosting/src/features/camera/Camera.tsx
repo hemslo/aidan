@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import { useCallback } from "react";
 import { useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { selectAccessToken, selectProjectId } from "../auth/authSlice";
+import { selectAccessToken, selectProjectId } from "../oauth2/authSlice";
 import { selectDeviceId, selectMediaSessionId, updateDeviceId, updateMediaSessionId } from "./cameraSlice";
 import { ListDevicesResponse, useExtendWebRtcStreamQuery, useGenerateWebRtcStreamQuery, useListDevicesQuery } from "./sdmApi";
 import { WebRTC } from "./webrtc";
