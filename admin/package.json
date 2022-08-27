@@ -3,7 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "addUser": "ts-node ./addUser.ts"
   },
   "devDependencies": {
     "ts-node": "^10.9.1",
