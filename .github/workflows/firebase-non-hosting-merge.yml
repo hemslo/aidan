@@ -1,0 +1,16 @@
+name: Deploy to Firebase Non Hosting on merge
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: GitHub Action for Firebase
+        uses: w9jds/firebase-action@v11.5.0
+        with:
+          args: deploy --except hosting
+        env:
+          GCP_SA_KEY: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_AIDAN_IS_DETECTING_ANY_NEEDS }}'
