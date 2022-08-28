@@ -1,4 +1,6 @@
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { getApp } from 'firebase/app';
+import { doc, getFirestore, setDoc } from 'firebase/firestore';
 import { RootState } from '../../app/store';
 import { saveState } from '../../localstorage';
 import { OAuth2AccessTokenResponse, OAuth2RefreshTokenResponse } from './oauth2Api';
@@ -28,6 +30,8 @@ export const saveOAuth2State = createAsyncThunk(
     async (_: string, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
         saveState({ oauth2: state.oauth2 })
+        const db = getFirestore(getApp());
+        await setDoc(doc(db, 'oauth2', 'state'), state.oauth2);
     }
 );
 
@@ -35,6 +39,15 @@ export const oauth2Slice = createSlice({
     name: 'oauth2',
     initialState,
     reducers: {
+        loadState: (state, action: PayloadAction<OAuth2State>) => {
+            state.clientId = action.payload.clientId;
+            state.clientSecret = action.payload.clientSecret;
+            state.projectId = action.payload.projectId;
+            state.code = action.payload.code;
+            state.access_token = action.payload.access_token;
+            state.refresh_token = action.payload.refresh_token;
+            state.expires_at = action.payload.expires_at;
+        },
         updateClientId: (state, action: PayloadAction<string>) => {
             state.clientId = action.payload;
         },
@@ -61,7 +74,15 @@ export const oauth2Slice = createSlice({
     },
 });
 
-export const { updateClientId, updateClientSecret, updateProjectId, updateCode, updateAccessToken, updateRefreshToken } = oauth2Slice.actions;
+export const {
+    loadState,
+    updateClientId,
+    updateClientSecret,
+    updateProjectId,
+    updateCode,
+    updateAccessToken,
+    updateRefreshToken,
+} = oauth2Slice.actions;
 
 export const selectAuth = (state: RootState) => state.oauth2;
 

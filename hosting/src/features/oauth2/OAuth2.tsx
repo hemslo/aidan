@@ -6,6 +6,8 @@ import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import { useAppSelector, useAppDispatch } from '../../app/hooks';
 import {
+    loadState,
+    OAuth2State,
     saveOAuth2State,
     selectAccessToken,
     selectClientId,
@@ -20,10 +22,11 @@ import {
     updateCode,
     updateProjectId,
     updateRefreshToken,
-} from './authSlice';
+} from './oauth2Slice';
 import { useEffect, useState } from 'react';
 import { useGetAccessTokenQuery, useRefreshTokenQuery } from './oauth2Api';
-import { useSigninCheck } from 'reactfire';
+import { useFirestore, useFirestoreDocData, useSigninCheck } from 'reactfire';
+import { doc } from 'firebase/firestore';
 
 const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
 const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
@@ -40,6 +43,17 @@ export function OAuth2() {
     const [now, setNow] = useState(new Date());
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+
+    const firestore = useFirestore();
+
+    const ref = doc(firestore, 'oauth2', 'state');
+    const { status: oauth2Status, data: oauth2State } = useFirestoreDocData(ref);
+
+    useEffect(() => {
+        if (oauth2Status !== 'loading' && oauth2State) {
+            dispatch(loadState(oauth2State as OAuth2State));
+        }
+    }, [oauth2Status, oauth2State, dispatch]);
 
     const { search } = useLocation();
 
