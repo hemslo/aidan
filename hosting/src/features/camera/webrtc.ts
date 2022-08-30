@@ -34,6 +34,14 @@ export class WebRTC {
         await this.localPeerConnection.setRemoteDescription({ "type": "answer", "sdp": answerSdp })
     }
 
+    async recreateOffer() {
+        this.localPeerConnection.close();
+        this.localPeerConnection = new RTCPeerConnection(servers);
+        this.offer = undefined;
+        this.initialised = false;
+        return this.createOffer();
+    }
+
     handleIceConnectionStateChange = (event: Event) => {
         console.log('ICE state change event: ', event);
     }

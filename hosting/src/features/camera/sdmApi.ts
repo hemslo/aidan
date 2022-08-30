@@ -27,14 +27,7 @@ export interface GenerateWebRtcStreamRequest {
   offerSdp: string,
 };
 
-export interface ExtendWebRtcStreamResponse {
-  results: {
-    expiresAt: string,
-    mediaSessionId: string,
-  }
-};
-
-export interface ExtendWebRtcStreamRequest {
+export interface StopWebRtcStreamRequest {
   projectId: string,
   deviceId: string,
   mediaSessionId: string,
@@ -52,6 +45,7 @@ export const sdmApi = createApi({
       return headers;
     }
   }),
+  tagTypes: ['WebRtcStream'],
   endpoints: (builder) => ({
     listDevices: builder.query<ListDevicesResponse, string>({
       query: (projectId: string) => ({
@@ -70,20 +64,22 @@ export const sdmApi = createApi({
           },
         },
       }),
+      providesTags: ['WebRtcStream'],
     }),
-    extendWebRtcStream: builder.query<ExtendWebRtcStreamResponse, ExtendWebRtcStreamRequest>({
-      query: (request: ExtendWebRtcStreamRequest) => ({
+    stopWebRtcStream: builder.mutation<object, StopWebRtcStreamRequest>({
+      query: (request: StopWebRtcStreamRequest) => ({
         url: `enterprises/${request.projectId}/devices/${request.deviceId}:executeCommand`,
         method: 'POST',
         body: {
-          command: "sdm.devices.commands.CameraLiveStream.ExtendWebRtcStream",
+          command: "sdm.devices.commands.CameraLiveStream.StopWebRtcStream",
           params: {
             mediaSessionId: request.mediaSessionId,
           },
         },
       }),
+      invalidatesTags: ['WebRtcStream'],
     }),
   }),
 });
 
-export const { useListDevicesQuery, useGenerateWebRtcStreamQuery, useExtendWebRtcStreamQuery } = sdmApi;
+export const { useListDevicesQuery, useGenerateWebRtcStreamQuery, useStopWebRtcStreamMutation } = sdmApi;

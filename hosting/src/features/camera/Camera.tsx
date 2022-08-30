@@ -4,10 +4,11 @@ import CardContent from "@mui/material/CardContent";
 import Typography from "@mui/material/Typography";
 import { useCallback } from "react";
 import { useEffect, useRef } from "react";
+import { useInterval } from "usehooks-ts";
 import { useAppDispatch, useAppSelector } from "../../app/hooks";
 import { selectAccessToken, selectProjectId } from "../oauth2/oauth2Slice";
 import { selectDeviceId, selectMediaSessionId, updateDeviceId, updateMediaSessionId } from "./cameraSlice";
-import { ListDevicesResponse, useExtendWebRtcStreamQuery, useGenerateWebRtcStreamQuery, useListDevicesQuery } from "./sdmApi";
+import { ListDevicesResponse, useGenerateWebRtcStreamQuery, useListDevicesQuery, useStopWebRtcStreamMutation } from "./sdmApi";
 import { WebRTC } from "./webrtc";
 
 const getCameraDeviceId = (response?: ListDevicesResponse) => {
@@ -60,14 +61,7 @@ export function Camera() {
         skip: !projectId || !deviceId || !webRTC.current.offer || !accessToken,
     });
 
-    useExtendWebRtcStreamQuery({
-        projectId,
-        deviceId,
-        mediaSessionId,
-    }, {
-        skip: !projectId || !deviceId || !mediaSessionId || !accessToken,
-        pollingInterval: 60 * 1000,
-    })
+    const [stopWebRtcStream] = useStopWebRtcStreamMutation();
 
     useEffect(() => {
         const handleGenerateWebRtcStreamResponse = async () => {
@@ -78,6 +72,23 @@ export function Camera() {
         };
         handleGenerateWebRtcStreamResponse();
     }, [generateWebRtcStreamResponse, webRTC, dispatch])
+
+    useInterval(async () => {
+        console.log('regenerate webRTC stream');
+        if (projectId && deviceId && mediaSessionId) {
+            await stopWebRtcStream({
+                projectId,
+                deviceId,
+                mediaSessionId,
+            });
+            dispatch(updateMediaSessionId(''));
+            console.log('reset webRTC');
+            mediaStream.current.getTracks().forEach(track => {
+                mediaStream.current.removeTrack(track);
+            });
+            await webRTC.current.recreateOffer();
+        }
+    }, 5 * 60 * 1000);
 
     return (
         <Card>
