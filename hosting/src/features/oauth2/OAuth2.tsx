@@ -21,16 +21,14 @@ import {
     updateClientSecret,
     updateCode,
     updateProjectId,
-    updateRefreshToken,
 } from './oauth2Slice';
-import { useEffect, useState } from 'react';
-import { useGetAccessTokenQuery, useRefreshTokenQuery } from './oauth2Api';
+import { useEffect } from 'react';
+import { useGetAccessTokenQuery } from './oauth2Api';
 import { useFirestore, useFirestoreDocData, useSigninCheck } from 'reactfire';
 import { doc } from 'firebase/firestore';
 
 const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
 const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
-const REFRESH_THRESHOLD = 1000 * 60 * 5;
 
 export function OAuth2() {
     const clientId = useAppSelector(selectClientId);
@@ -40,7 +38,6 @@ export function OAuth2() {
     const accessToken = useAppSelector(selectAccessToken);
     const refreshToken = useAppSelector(selectRefreshToken);
     const expiresAt = useAppSelector(selectExpiresAt);
-    const [now, setNow] = useState(new Date());
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
@@ -81,26 +78,6 @@ export function OAuth2() {
             navigate('/');
         }
     }, [oAuth2AccessTokenResponse, dispatch, navigate]);
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setNow(new Date());
-        }, 60000);
-        return () => clearInterval(interval);
-    }, []);
-
-    const { data: oAuth2RefreshTokenResponse } = useRefreshTokenQuery({
-        clientId,
-        clientSecret,
-        refreshToken,
-    }, { skip: !refreshToken || !clientId || !clientSecret || expiresAt.getTime() - now.getTime() > REFRESH_THRESHOLD });
-
-    useEffect(() => {
-        if (oAuth2RefreshTokenResponse) {
-            dispatch(updateRefreshToken(oAuth2RefreshTokenResponse))
-            dispatch(saveOAuth2State(''));
-        }
-    }, [oAuth2RefreshTokenResponse, dispatch]);
 
     const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { admin: 'true' } });
 

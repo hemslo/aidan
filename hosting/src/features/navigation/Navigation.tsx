@@ -9,6 +9,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import { useAuth, useSigninCheck } from 'reactfire';
 import { useState, MouseEvent, useCallback } from 'react';
+import { clearState } from '../../localstorage';
 
 const UserMenu = () => {
     const auth = useAuth();
@@ -26,6 +27,7 @@ const UserMenu = () => {
 
     const handleLogout = async () => {
         await auth.signOut();
+        clearState();
         setAnchorEl(null);
     };
 

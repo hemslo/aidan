@@ -1,4 +1,19 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type {
+  BaseQueryFn,
+  FetchArgs,
+  FetchBaseQueryError,
+  FetchBaseQueryMeta,
+} from '@reduxjs/toolkit/query'
+import { FetchBaseQueryArgs } from '@reduxjs/toolkit/dist/query/fetchBaseQuery';
+import {
+  saveOAuth2State,
+  selectClientId,
+  selectClientSecret,
+  selectRefreshToken,
+  updateRefreshToken
+} from './oauth2Slice';
+import { RootState } from '../../app/store';
 
 export interface OAuth2AccessTokenRequest {
   clientId: string,
@@ -60,4 +75,32 @@ export const oauth2Api = createApi({
   }),
 });
 
-export const { useGetAccessTokenQuery, useRefreshTokenQuery } = oauth2Api;
+export function fetchBaseQueryWithReauth(fetchBaseQueryArgs: FetchBaseQueryArgs = {}): BaseQueryFn<
+  string | FetchArgs,
+  unknown,
+  FetchBaseQueryError,
+  {},
+  FetchBaseQueryMeta
+> {
+  const baseQuery = fetchBaseQuery(fetchBaseQueryArgs);
+  return async (args, api, extraOptions) => {
+    const result = await baseQuery(args, api, extraOptions);
+    if (!result.error || result.error.status !== 401) {
+      return result;
+    }
+    const state = api.getState() as RootState;
+    const request = {
+      clientId: selectClientId(state),
+      clientSecret: selectClientSecret(state),
+      refreshToken: selectRefreshToken(state),
+    };
+    const refreshResult = await api.dispatch(oauth2Api.endpoints.refreshToken.initiate(request));
+    if (refreshResult.data) {
+      api.dispatch(updateRefreshToken(refreshResult.data));
+      await api.dispatch(saveOAuth2State(''));
+    }
+    return await baseQuery(args, api, extraOptions);
+  };
+}
+
+export const { useGetAccessTokenQuery } = oauth2Api;

@@ -1,5 +1,6 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../../app/store';
+import { fetchBaseQueryWithReauth } from '../oauth2/oauth2Api';
 
 export interface Device {
   name: string;
@@ -41,7 +42,7 @@ export interface ExtendWebRtcStreamRequest {
 
 export const sdmApi = createApi({
   reducerPath: 'sdmapi',
-  baseQuery: fetchBaseQuery({
+  baseQuery: fetchBaseQueryWithReauth({
     baseUrl: 'https://smartdevicemanagement.googleapis.com/v1/',
     prepareHeaders: (headers, { getState }) => {
       const token = (getState() as RootState).oauth2.access_token;
