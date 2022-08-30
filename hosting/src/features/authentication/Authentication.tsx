@@ -39,11 +39,11 @@ const SignInForm = () => {
   );
 
   const auth = useAuth();
-  const onSignInWithGoogle = useCallback(
+  const handleSignInWithGoogle = useCallback(
     () => signInWithPopup(auth, new GoogleAuthProvider()),
     [auth],
   );
-  const onSignInWIthEmailAndPassword = useCallback(
+  const handleSignInWIthEmailAndPassword = useCallback(
     async (event: FormEvent) => {
       event.preventDefault();
       try {
@@ -57,7 +57,7 @@ const SignInForm = () => {
   );
 
   return (
-    <Stack spacing={2} component="form" onSubmit={onSignInWIthEmailAndPassword}>
+    <Stack spacing={2} component="form" onSubmit={handleSignInWIthEmailAndPassword}>
       <FormControl>
         <TextField
           fullWidth
@@ -82,12 +82,12 @@ const SignInForm = () => {
       <Button
         type="submit"
         startIcon={<LoginIcon />}
-        onClick={onSignInWIthEmailAndPassword}>
+        onClick={handleSignInWIthEmailAndPassword}>
         Login
       </Button>
       <Button
         startIcon={<GoogleIcon />}
-        onClick={onSignInWithGoogle}>
+        onClick={handleSignInWithGoogle}>
         Sign in with Google
       </Button>
     </Stack>
