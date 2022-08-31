@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography';
 import { clearState } from '../../localstorage';
 import { useAuth, useSigninCheck } from 'reactfire';
 import { useState, MouseEvent, useCallback } from 'react';
+import logo from '../../logo.svg';
 
 const UserMenu = () => {
     const auth = useAuth();
@@ -78,15 +79,32 @@ const UserMenu = () => {
     return (<></>);
 };
 
-const Brand = () => (<Typography variant="h5" noWrap component="a" href="/" sx={{
-    mr: 2,
-    display: { xs: 'none', md: 'flex' },
-    letterSpacing: '.3rem',
-    color: 'inherit',
-    textDecoration: 'none',
-}}>
-    Aidan
-</Typography>);
+const Brand = () => (
+    <Typography
+        variant="h5"
+        noWrap
+        component="a"
+        href="/"
+        sx={{
+            mr: 2,
+            display: { xs: 'none', md: 'flex' },
+            letterSpacing: '.3rem',
+            color: 'inherit',
+            textDecoration: 'none',
+        }}>
+        <Box
+            component="img"
+            sx={{
+                height: 32,
+                mr: 2,
+                display: { xs: 'none', md: 'flex' },
+            }}
+            alt="Aidan's logo"
+            src={logo}
+        />
+        Aidan
+    </Typography>
+);
 
 const NavItems = () => (<Box sx={{ flexGrow: 1, display: 'flex' }}>
     <List>
