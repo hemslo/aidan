@@ -123,10 +123,12 @@ export function Camera() {
 
     const handleSnapshot = useCallback(async () => {
         if (videoRef.current) {
-            const filename = `${new Date().toISOString()}.jpeg`;
+            const currentTime = new Date().toISOString();
+            const date = currentTime.split('T')[0];
+            const filename = `${currentTime}.jpeg`;
             console.log(`taking snapshot: ${filename}`);
             const snapshot = takeSnapshot(videoRef.current);
-            const path = `snapshots/${filename}`;
+            const path = `snapshots/${date}/${filename}`;
             const snapshotRef = ref(storage, path);
             await uploadString(snapshotRef, snapshot, 'data_url');
             await setDoc(doc(firestore, 'snapshots', filename), { imageGcsUri: snapshotRef.toString() });

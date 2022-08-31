@@ -94,11 +94,13 @@ export function fetchBaseQueryWithReauth(fetchBaseQueryArgs: FetchBaseQueryArgs 
       clientSecret: selectClientSecret(state),
       refreshToken: selectRefreshToken(state),
     };
-    const refreshResult = await api.dispatch(oauth2Api.endpoints.refreshToken.initiate(request));
+    const refreshToken = api.dispatch(oauth2Api.endpoints.refreshToken.initiate(request));
+    const refreshResult = await refreshToken;
     if (refreshResult.data) {
       api.dispatch(updateRefreshToken(refreshResult.data));
       await api.dispatch(saveOAuth2State(''));
     }
+    refreshToken.unsubscribe();
     return await baseQuery(args, api, extraOptions);
   };
 }
