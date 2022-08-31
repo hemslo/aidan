@@ -4,10 +4,12 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Provider } from 'react-redux';
 import { store } from './app/store';
-import App from './App';
+import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import { FirebaseAppProvider } from 'reactfire';
 import { firebaseConfig } from './firebaseConfig';
+import { Live } from './features/live/Live';
+import { OAuth2 } from './features/oauth2/OAuth2';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -20,7 +22,8 @@ root.render(
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<App />}>
-              <Route path="auth" element={<App />} />
+              <Route index element={<Live />} />
+              <Route path="auth" element={<OAuth2 />} />
             </Route>
           </Routes>
         </BrowserRouter>

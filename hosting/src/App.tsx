@@ -1,16 +1,14 @@
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import Toolbar from '@mui/material/Toolbar';
 import { AuthProvider, useFirebaseApp, FirestoreProvider, StorageProvider } from 'reactfire';
 import { Authentication, AuthWrapper } from './features/authentication/Authentication';
-import { Camera } from './features/camera/Camera';
 import { Navigation } from './features/navigation/Navigation';
-import { OAuth2 } from './features/oauth2/OAuth2';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { Outlet } from 'react-router-dom';
 
-function App() {
+export const App = () => {
   const firebaseApp = useFirebaseApp();
   const auth = getAuth(firebaseApp);
   const firestoreInstance = getFirestore(firebaseApp);
@@ -26,14 +24,7 @@ function App() {
               <Toolbar />
               <Authentication />
               <AuthWrapper fallback={<></>}>
-                <Grid container spacing={2} >
-                  <Grid item xs={12}>
-                    <Camera />
-                  </Grid>
-                  <Grid item xs={12}>
-                    <OAuth2 />
-                  </Grid>
-                </Grid>
+                <Outlet />
               </AuthWrapper>
             </Box>
           </Box>
@@ -41,6 +32,4 @@ function App() {
       </FirestoreProvider>
     </AuthProvider>
   );
-}
-
-export default App;
+};

@@ -1,15 +1,21 @@
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import AppBar from '@mui/material/AppBar';
 import Avatar from '@mui/material/Avatar';
+import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
+import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemButton from '@mui/material/ListItemButton';
+import ListItemText from '@mui/material/ListItemText';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
+import { clearState } from '../../localstorage';
 import { useAuth, useSigninCheck } from 'reactfire';
 import { useState, MouseEvent, useCallback } from 'react';
-import { clearState } from '../../localstorage';
 
 const UserMenu = () => {
     const auth = useAuth();
@@ -47,8 +53,8 @@ const UserMenu = () => {
                     color="inherit"
                 >
                     {user.photoURL && user.displayName
-                    ? <Avatar alt={user.displayName} src={user.photoURL} />
-                    : <AccountCircleIcon />}
+                        ? <Avatar alt={user.displayName} src={user.photoURL} />
+                        : <AccountCircleIcon />}
                 </IconButton>
                 <Menu
                     id="menu-appbar"
@@ -72,15 +78,37 @@ const UserMenu = () => {
     return (<></>);
 };
 
-export function Navigation() {
+const Brand = () => (<Typography variant="h5" noWrap component="a" href="/" sx={{
+    mr: 2,
+    display: { xs: 'none', md: 'flex' },
+    letterSpacing: '.3rem',
+    color: 'inherit',
+    textDecoration: 'none',
+}}>
+    Aidan
+</Typography>);
+
+const NavItems = () => (<Box sx={{ flexGrow: 1, display: 'flex' }}>
+    <List>
+        <ListItem key='Live' disablePadding>
+            <ListItemButton href='/'>
+                <ListItemText primary='Live' />
+            </ListItemButton>
+        </ListItem>
+    </List>
+</Box>);
+
+
+export const Navigation = () => {
     return (
         <AppBar component="nav">
             <Toolbar>
-                <Typography variant="h3" component="div" sx={{ flexGrow: 1 }}>
-                    Aidan
-                </Typography>
+                <Brand />
+                <Divider />
+                <NavItems />
+                <Divider />
                 <UserMenu />
             </Toolbar>
         </AppBar>
     );
-}
+};
