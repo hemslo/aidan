@@ -22,7 +22,7 @@ import { useInterval } from "usehooks-ts";
 
 
 const REGENERATE_WEBRTC_STREAM_INTERVAL = 5 * 60 * 1000;
-const SNAPSHOT_INTERVAL = 10 * 1000;
+const SNAPSHOT_INTERVAL = 30 * 1000;
 
 export interface Snapshot {
     id: string;
@@ -168,7 +168,7 @@ export function Camera() {
                             control={<Switch
                                 checked={enableSnapshot}
                                 onChange={handleSnapshotSwitch} />}
-                            label="Take snapshot every 10s" />
+                            label={`Take snapshot every ${SNAPSHOT_INTERVAL / 1000}s`} />
                     </FormGroup>
                     <Button
                         startIcon={<CameraIcon />}
