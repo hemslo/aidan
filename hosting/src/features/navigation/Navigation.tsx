@@ -107,10 +107,15 @@ const Brand = () => (
 );
 
 const NavItems = () => (<Box sx={{ flexGrow: 1, display: 'flex' }}>
-    <List>
+    <List sx={{ display: 'flex' }}>
         <ListItem key='Live' disablePadding>
             <ListItemButton href='/'>
                 <ListItemText primary='Live' />
+            </ListItemButton>
+        </ListItem>
+        <ListItem key='Dashboard' disablePadding>
+            <ListItemButton href='/dashboard'>
+                <ListItemText primary='Dashboard' />
             </ListItemButton>
         </ListItem>
     </List>

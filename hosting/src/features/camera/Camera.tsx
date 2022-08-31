@@ -24,6 +24,11 @@ import { useInterval } from "usehooks-ts";
 const REGENERATE_WEBRTC_STREAM_INTERVAL = 5 * 60 * 1000;
 const SNAPSHOT_INTERVAL = 10 * 1000;
 
+export interface Snapshot {
+    id: string;
+    imageGcsUri: string;
+};
+
 const getCameraDeviceId = (response?: ListDevicesResponse) => {
     if (!response) {
         return '';
@@ -131,7 +136,10 @@ export function Camera() {
             const path = `snapshots/${date}/${filename}`;
             const snapshotRef = ref(storage, path);
             await uploadString(snapshotRef, snapshot, 'data_url');
-            await setDoc(doc(firestore, 'snapshots', filename), { imageGcsUri: snapshotRef.toString() });
+            await setDoc(
+                doc(firestore, 'snapshots', filename),
+                { id: filename, imageGcsUri: snapshotRef.toString() },
+            );
             console.log(`${filename} uploaded to ${snapshotRef}`);
         }
     }, [firestore, storage]);

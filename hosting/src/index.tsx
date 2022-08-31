@@ -10,6 +10,7 @@ import { FirebaseAppProvider } from 'reactfire';
 import { firebaseConfig } from './firebaseConfig';
 import { Live } from './features/live/Live';
 import { OAuth2 } from './features/oauth2/OAuth2';
+import { Dashboard } from './features/dashboard/Dashboard';
 
 const container = document.getElementById('root')!;
 const root = createRoot(container);
@@ -24,6 +25,7 @@ root.render(
             <Route path="/" element={<App />}>
               <Route index element={<Live />} />
               <Route path="auth" element={<OAuth2 />} />
+              <Route path="dashboard" element={<Dashboard />} />
             </Route>
           </Routes>
         </BrowserRouter>
