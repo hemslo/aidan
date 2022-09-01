@@ -21,9 +21,12 @@ export class WebRTC {
         }
         this.initialised = true;
         this.localPeerConnection.ondatachannel = this.receiveChannelCallback;
+        this.localPeerConnection.addTransceiver('audio', { direction: 'recvonly' });
+        this.localPeerConnection.addTransceiver('video', { direction: 'recvonly' });
         this.localPeerConnection.createDataChannel('dataSendChannel');
         this.localPeerConnection.addEventListener('iceconnectionstatechange', this.handleIceConnectionStateChange);
         this.localPeerConnection.addEventListener('track', this.gotRemoteMediaTrack);
+
         console.log('create Offer');
         const offer = await this.localPeerConnection.createOffer(localOfferOptions);
         await this.localPeerConnection.setLocalDescription(offer);
