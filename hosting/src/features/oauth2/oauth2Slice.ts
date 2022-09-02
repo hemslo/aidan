@@ -31,7 +31,11 @@ export const saveOAuth2State = createAsyncThunk(
         const state = thunkAPI.getState() as RootState;
         saveState({ oauth2: state.oauth2 })
         const db = getFirestore(getApp());
-        await setDoc(doc(db, 'oauth2', 'state'), state.oauth2);
+        try {
+            await setDoc(doc(db, 'oauth2', 'state'), state.oauth2);
+        } catch (e) {
+            console.error('Error saving OAuth2 state', e);
+        }
     }
 );
 
