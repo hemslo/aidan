@@ -60,6 +60,7 @@ const SignInForm = () => {
     <Stack spacing={2} component="form" onSubmit={handleSignInWIthEmailAndPassword}>
       <FormControl>
         <TextField
+          id="email"
           fullWidth
           name="email"
           type="email"
@@ -69,6 +70,7 @@ const SignInForm = () => {
       </FormControl>
       <FormControl>
         <TextField
+          id="password"
           fullWidth
           name="password"
           type="password"
@@ -80,6 +82,7 @@ const SignInForm = () => {
         {errorMessage && <FormHelperText error>{errorMessage}</FormHelperText>}
       </FormControl>
       <Button
+        id="login"
         type="submit"
         startIcon={<LoginIcon />}
         onClick={handleSignInWIthEmailAndPassword}>

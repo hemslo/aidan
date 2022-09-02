@@ -1,0 +1,12 @@
+{
+  "name": "aidan-feeder",
+  "version": "0.1.0",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "puppeteer": "^17.1.0"
+  }
+}

@@ -127,7 +127,7 @@ export function Camera() {
     };
 
     const handleSnapshot = useCallback(async () => {
-        if (videoRef.current) {
+        if (videoRef.current && videoRef.current.srcObject) {
             const currentTime = new Date().toISOString();
             const date = currentTime.split('T')[0];
             const filename = `${currentTime}.jpeg`;
@@ -166,6 +166,7 @@ export function Camera() {
                     <FormGroup>
                         <FormControlLabel
                             control={<Switch
+                                id="snapshot-switch"
                                 checked={enableSnapshot}
                                 onChange={handleSnapshotSwitch} />}
                             label={`Take snapshot every ${SNAPSHOT_INTERVAL / 1000}s`} />
