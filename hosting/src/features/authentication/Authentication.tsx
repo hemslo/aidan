@@ -11,7 +11,7 @@ import { useAuth, useSigninCheck } from 'reactfire';
 import { ChangeEvent, FormEvent, useCallback, useState } from 'react';
 
 export const AuthWrapper = ({ children, fallback }: React.PropsWithChildren<{ fallback: JSX.Element }>): JSX.Element => {
-  const { status, data: signInCheckResult } = useSigninCheck({ requiredClaims: { reader: 'true'} });
+  const { status, data: signInCheckResult } = useSigninCheck({ requiredClaims: { read: 'true'} });
 
   if (!children) {
     throw new Error('Children must be provided');
@@ -98,7 +98,7 @@ const SignInForm = () => {
 };
 
 export function Authentication() {
-  const { status, data: signinResult } = useSigninCheck({ requiredClaims: { reader: 'true'} });
+  const { status, data: signinResult } = useSigninCheck({ requiredClaims: { read: 'true'} });
 
   if (status === 'loading') {
     return <></>;

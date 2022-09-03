@@ -120,7 +120,7 @@ export function Camera() {
         }
     }, REGENERATE_WEBRTC_STREAM_INTERVAL);
 
-    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { admin: 'true' } });
+    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
     const [enableSnapshot, setEnableSnapshot] = useState(false);
     const handleSnapshotSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEnableSnapshot(event.target.checked);

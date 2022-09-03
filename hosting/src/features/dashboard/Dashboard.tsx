@@ -81,7 +81,7 @@ export const Dashboard = () => {
         await deleteDoc(doc(snapshotsCollection, snapshot.id))
     }, [snapshotsCollection, storage]);
     const { status, data: snapshots } = useFirestoreCollectionData(snapshotsQuery, { idField: 'id' });
-    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { admin: 'true' } });
+    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
 
     if (status === "loading") {
         return <CircularProgress />

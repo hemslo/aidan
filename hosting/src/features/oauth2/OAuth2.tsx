@@ -79,7 +79,7 @@ export function OAuth2() {
         }
     }, [oAuth2AccessTokenResponse, dispatch, navigate]);
 
-    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { admin: 'true' } });
+    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
 
     return signInCheckResult && signInCheckResult.hasRequiredClaims
         ? (
