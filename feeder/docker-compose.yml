@@ -5,3 +5,4 @@ services:
       - .env
     cap_add:
       - SYS_ADMIN
+    restart: always

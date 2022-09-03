@@ -15,6 +15,7 @@ const login = async (page) => {
 const toggleOnSnapshotSwitch = async (page) => {
     const snapshotSwitch = await page.waitForSelector('#snapshot-switch')
     await snapshotSwitch.click();
+    console.log(`FEEDER LOG: ${new Date().toISOString()} - Enable snapshot`);
 };
 
 const main = async () => {
@@ -22,12 +23,12 @@ const main = async () => {
         args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage'],
     });
     const page = await browser.newPage();
+    page.on('console', msg => console.log(`PAGE LOG: ${new Date().toISOString()} - ${msg.text()}`));
     await page.goto(url, { waitUntil: 'networkidle2' });
     await login(page);
     await toggleOnSnapshotSwitch(page);
 
     while (true) {
-        console.log(`${new Date().toISOString()} - Taking snapshot`);
         await sleep(reloodInterval);
         await page.reload({ waitUntil: 'networkidle2' });
         await toggleOnSnapshotSwitch(page);
