@@ -1,5 +1,6 @@
 name: Deploy to Firebase Non Hosting on merge
-'on':
+
+on:
   push:
     branches:
       - main
