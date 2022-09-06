@@ -27,6 +27,7 @@ const SNAPSHOT_INTERVAL = 30 * 1000;
 export interface Snapshot {
     id: string;
     imageGcsUri: string;
+    label?: string;
 };
 
 const getCameraDeviceId = (response?: ListDevicesResponse) => {
@@ -161,7 +162,7 @@ export function Camera() {
                     Id: {deviceId}
                 </Typography>
             </CardContent>
-            {signInCheckResult && signInCheckResult.hasRequiredClaims && (
+            {signInCheckResult?.hasRequiredClaims && (
                 <CardActions>
                     <FormGroup>
                         <FormControlLabel

@@ -81,7 +81,7 @@ export function OAuth2() {
 
     const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
 
-    return signInCheckResult && signInCheckResult.hasRequiredClaims
+    return signInCheckResult?.hasRequiredClaims
         ? (
             <Stack spacing={2}>
                 <TextField
