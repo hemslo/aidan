@@ -9,6 +9,7 @@ import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from '@mui/material/MenuItem';
+import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
@@ -17,7 +18,7 @@ import { Snapshot } from "../camera/Camera";
 import { query, orderBy, limit, deleteDoc, doc, where, CollectionReference, DocumentData, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { useCallback, useMemo, useState } from "react";
-import { useFirestoreCollectionData,  useStorage, useStorageDownloadURL } from "reactfire";
+import { useFirestoreCollectionData, useStorage, useStorageDownloadURL } from "reactfire";
 
 const DownloadImage = ({ snapshot }: { snapshot: Snapshot }) => {
     const storage = useStorage();
@@ -42,7 +43,7 @@ const SnapshotImageActions = ({
     label?: string,
     labels: DocumentData[],
 }) => {
-    return (<Stack direction="row" spacing={2} sx={{m: 1}}>
+    return (<Stack direction="row" spacing={2} sx={{ m: 1 }}>
         <FormControl fullWidth>
             <InputLabel>Label</InputLabel>
             <Select
@@ -150,6 +151,12 @@ export const Snapshots = ({
 
     const { status, data: snapshots } = useFirestoreCollectionData(snapshotsQuery, { idField: 'id' });
 
+    const handleNextPage = useCallback(() => {
+        if (snapshots.length > 0) {
+            setToDateTime(new Date(snapshots[snapshots.length - 1].id.slice(0, -5)));
+        }
+    }, [snapshots]);
+
     if (status === 'loading') {
         return <CircularProgress />;
     }
@@ -170,6 +177,12 @@ export const Snapshots = ({
                     value={toDateTime}
                     onChange={setToDateTime}
                 />
+                <Divider orientation="vertical" flexItem>-</Divider>
+                <Button
+                    startIcon={<NavigateNextIcon />}
+                    onClick={handleNextPage}
+                    disabled={snapshots.length === 0}
+                >Next Page</Button>
             </Container>
 
             <ImageList>
