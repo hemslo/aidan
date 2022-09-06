@@ -5,13 +5,15 @@
   "scripts": {
     "tsc": "tsc",
     "addUser": "ts-node ./addUser.ts",
-    "setClaims": "ts-node ./setClaims.ts"
-  },
-  "devDependencies": {
-    "ts-node": "^10.9.1",
-    "typescript": "^4.8.2"
+    "setClaims": "ts-node ./setClaims.ts",
+    "import": "npx @firebaseextensions/fs-bq-import-collection",
+    "gen-schema-view": "npx @firebaseextensions/fs-bq-schema-views"
   },
   "dependencies": {
-    "firebase-admin": "^11.0.1"
+    "@firebaseextensions/fs-bq-import-collection": "^0.1.14",
+    "@firebaseextensions/fs-bq-schema-views": "^0.4.3",
+    "firebase-admin": "^11.0.1",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
   }
 }

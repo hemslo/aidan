@@ -1,0 +1,16 @@
+{
+    "fields": [
+        {
+            "name": "id",
+            "type": "string"
+        },
+        {
+            "name": "imageGcsUri",
+            "type": "string"
+        },
+        {
+            "name": "label",
+            "type": "string"
+        }
+    ]
+}
