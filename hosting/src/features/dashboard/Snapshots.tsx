@@ -4,20 +4,20 @@ import Container from "@mui/material/Container";
 import DeleteIcon from '@mui/icons-material/Delete';
 import Divider from "@mui/material/Divider";
 import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from '@mui/material/MenuItem';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Snapshot } from "../camera/Camera";
 import { query, orderBy, limit, deleteDoc, doc, where, CollectionReference, DocumentData, updateDoc } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
-import { useCallback, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useMemo, useState } from "react";
 import { useFirestoreCollectionData, useStorage, useStorageDownloadURL } from "reactfire";
 
 const DownloadImage = ({ snapshot }: { snapshot: Snapshot }) => {
@@ -39,22 +39,35 @@ const SnapshotImageActions = ({
 }: {
     handleDeleteSnapshot: () => Promise<void>,
     disableDelete: boolean,
-    handleLabelChange: (event: SelectChangeEvent) => Promise<void>,
+    handleLabelChange: (event: ChangeEvent<HTMLInputElement>) => Promise<void>,
     label?: string,
     labels: DocumentData[],
 }) => {
     return (<Stack direction="row" spacing={2} sx={{ m: 1 }}>
         <FormControl fullWidth>
-            <InputLabel>Label</InputLabel>
-            <Select
+            <RadioGroup
+                row
+                aria-labelledby="demo-form-control-label-placement"
+                name="position"
+                defaultValue="bottom"
                 value={label || ""}
-                label="Label"
                 onChange={handleLabelChange}
-                defaultValue=""
             >
-                <MenuItem key="empty" value=""><em>None</em></MenuItem>
-                {labels.map((label) => <MenuItem key={label.id} value={label.name}>{label.name}</MenuItem>)}
-            </Select>
+                <FormControlLabel
+                    value=""
+                    control={<Radio />}
+                    label="None"
+                    key="none"
+                    labelPlacement="top"
+                />
+                {labels.map((label) => <FormControlLabel
+                    key={label.id}
+                    control={<Radio />}
+                    value={label.name}
+                    label={label.name}
+                    labelPlacement="top"
+                />)}
+            </RadioGroup>
         </FormControl>
         <Button
             startIcon={<DeleteIcon />}
@@ -87,7 +100,7 @@ const SnapshotImage = ({
     }, [deleteSnapshot, snapshot]);
 
     const handleLabelChange = useCallback(
-        (event: SelectChangeEvent) => updateSnapshotLabel(snapshot, event.target.value),
+        (event: ChangeEvent<HTMLInputElement>) => updateSnapshotLabel(snapshot, event.target.value),
         [updateSnapshotLabel, snapshot],
     );
 
