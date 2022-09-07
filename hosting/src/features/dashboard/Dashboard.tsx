@@ -18,7 +18,7 @@ export const Dashboard = () => {
     const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
 
     return (
-        <Stack spacing={3}>
+        <Stack spacing={3} sx={{justifyContent: 'center'}}>
             {labelsStatus === 'loading'
                 ? <CircularProgress />
                 : <Labels canEdit={signInCheckResult?.hasRequiredClaims} labels={labels} labelsCollection={labelsCollection} />}

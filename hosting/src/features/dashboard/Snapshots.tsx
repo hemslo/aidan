@@ -210,6 +210,12 @@ export const Snapshots = ({
                         />
                     </ImageListItem>))}
             </ImageList>
+
+            <Button
+                startIcon={<NavigateNextIcon />}
+                onClick={handleNextPage}
+                disabled={snapshots.length === 0}
+            >Next Page</Button>
         </>
     );
 };
