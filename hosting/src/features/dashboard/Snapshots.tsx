@@ -9,9 +9,11 @@ import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
+import NavigateBeforeIcon from '@mui/icons-material/NavigateBefore';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import Stack from "@mui/material/Stack";
+import Switch from '@mui/material/Switch';
 import TextField from "@mui/material/TextField";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { Snapshot } from "../camera/Camera";
@@ -134,6 +136,7 @@ export const Snapshots = ({
     const storage = useStorage();
     const [fromDateTime, setFromDateTime] = useState<Date | null>(null);
     const [toDateTime, setToDateTime] = useState<Date | null>(null);
+    const [desc, setDesc] = useState<boolean>(true);
 
     const snapshotsQuery = useMemo(
         () => {
@@ -147,10 +150,10 @@ export const Snapshots = ({
             return query(
                 snapshotsCollection,
                 ...conditions,
-                orderBy('id', 'desc'),
+                orderBy('id', desc ? 'desc' : 'asc'),
                 limit(10));
         },
-        [fromDateTime, toDateTime, snapshotsCollection],
+        [fromDateTime, toDateTime, snapshotsCollection, desc],
     );
 
     const deleteSnapshot = useCallback(async (snapshot: Snapshot) => {
@@ -162,13 +165,37 @@ export const Snapshots = ({
         await updateDoc(doc(snapshotsCollection, snapshot.id), { label });
     }, [snapshotsCollection]);
 
+    const handleDescChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        setDesc(event.target.checked);
+    }, []);
+
     const { status, data: snapshots } = useFirestoreCollectionData(snapshotsQuery, { idField: 'id' });
 
     const handleNextPage = useCallback(() => {
         if (snapshots.length > 0) {
-            setToDateTime(new Date(snapshots[snapshots.length - 1].id.slice(0, -5)));
+            const lastDateTime = new Date(snapshots[snapshots.length - 1].id.slice(0, -5));
+            if (desc) {
+                setToDateTime(lastDateTime);
+            } else {
+                setFromDateTime(lastDateTime);
+            }
         }
-    }, [snapshots]);
+    }, [snapshots, desc]);
+
+    const handlePrevPage = useCallback(() => {
+        if (snapshots.length > 0) {
+            const firstDateTime = new Date(snapshots[0].id.slice(0, -5));
+            if (desc) {
+                setFromDateTime(firstDateTime);
+                setToDateTime(null);
+                setDesc(false);
+            } else {
+                setToDateTime(firstDateTime);
+                setFromDateTime(null);
+                setDesc(true);
+            }
+        }
+    }, [snapshots, desc]);
 
     if (status === 'loading') {
         return <CircularProgress />;
@@ -177,6 +204,12 @@ export const Snapshots = ({
     return (
         <>
             <Container sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                    startIcon={<NavigateBeforeIcon />}
+                    onClick={handlePrevPage}
+                    disabled={snapshots.length === 0}
+                >Prev Page</Button>
+                <Divider orientation="vertical" flexItem>-</Divider>
                 <DateTimePicker
                     renderInput={(props) => <TextField {...props} />}
                     label="From"
@@ -190,6 +223,15 @@ export const Snapshots = ({
                     value={toDateTime}
                     onChange={setToDateTime}
                 />
+                <Divider orientation="vertical" flexItem>-</Divider>
+                <FormControl component="fieldset" variant="standard">
+                    <FormControlLabel
+                        control={
+                            <Switch checked={desc} onChange={handleDescChange} />
+                        }
+                        label="Descending"
+                    />
+                </FormControl>
                 <Divider orientation="vertical" flexItem>-</Divider>
                 <Button
                     startIcon={<NavigateNextIcon />}
@@ -211,11 +253,19 @@ export const Snapshots = ({
                     </ImageListItem>))}
             </ImageList>
 
-            <Button
-                startIcon={<NavigateNextIcon />}
-                onClick={handleNextPage}
-                disabled={snapshots.length === 0}
-            >Next Page</Button>
+            <Container sx={{ display: 'flex', justifyContent: 'center' }}>
+                <Button
+                    startIcon={<NavigateBeforeIcon />}
+                    onClick={handlePrevPage}
+                    disabled={snapshots.length === 0}
+                >Prev Page</Button>
+                <Divider orientation="vertical" flexItem>-</Divider>
+                <Button
+                    startIcon={<NavigateNextIcon />}
+                    onClick={handleNextPage}
+                    disabled={snapshots.length === 0}
+                >Next Page</Button>
+            </Container>
         </>
     );
 };
