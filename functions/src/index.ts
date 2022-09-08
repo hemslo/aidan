@@ -38,7 +38,7 @@ export const predict = onObjectFinalized(
           },
         },
       });
-      log("Prediction response: ", response);
+      log("Prediction response", response);
       const result = response.payload?.sort(
           (a, b) => b.classification!.score! - a.classification!.score!,
       )[0];
@@ -47,7 +47,7 @@ export const predict = onObjectFinalized(
         return;
       }
 
-      log("Prediction result: ", result);
+      log("Prediction result", result);
 
       const snapshotsCollection = getFirestore().collection("snapshots");
       const docRef = snapshotsCollection.doc(basename(name!));
@@ -58,12 +58,12 @@ export const predict = onObjectFinalized(
         await sleep(1000);
         doc = await docRef.get();
       }
-      log("Document data: ", doc.data());
+      log("Document data", doc.data());
 
       await docRef.set({
         prediction: result.displayName,
         score: result.classification!.score,
       }, {merge: true});
 
-      log("Prediction saved: ", name);
+      log("Prediction saved", name);
     });
