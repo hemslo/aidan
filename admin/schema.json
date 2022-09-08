@@ -11,6 +11,14 @@
         {
             "name": "label",
             "type": "string"
+        },
+        {
+            "name": "prediction",
+            "type": "string"
+        },
+        {
+            "name": "score",
+            "type": "number"
         }
     ]
 }
