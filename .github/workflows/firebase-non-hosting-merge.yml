@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: npm install
+        run: npm --prefix functions install
       - name: GitHub Action for Firebase
         uses: w9jds/firebase-action@v11.5.0
         with:
