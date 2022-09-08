@@ -28,6 +28,8 @@ export interface Snapshot {
     id: string;
     imageGcsUri: string;
     label?: string;
+    prediction?: string;
+    score?: number;
 };
 
 const getCameraDeviceId = (response?: ListDevicesResponse) => {

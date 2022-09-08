@@ -81,6 +81,13 @@ const SnapshotImageActions = ({
     </Stack>);
 };
 
+const getSnapshotPrediction = (snapshot: Snapshot) => {
+    if (!snapshot.prediction || !snapshot.score) {
+        return undefined;
+    }
+    return `${snapshot.prediction} (${(snapshot.score * 100).toFixed(2)}%)`;
+};
+
 const SnapshotImage = ({
     snapshot,
     deleteSnapshot,
@@ -111,6 +118,7 @@ const SnapshotImage = ({
             {disableDelete ? <CircularProgress /> : <DownloadImage snapshot={snapshot} />}
             <ImageListItemBar
                 title={snapshot.id}
+                subtitle={getSnapshotPrediction(snapshot)}
                 position="below"
                 actionIcon={canEdit && <SnapshotImageActions
                     handleDeleteSnapshot={handleDeleteSnapshot}
