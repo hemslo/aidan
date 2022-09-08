@@ -11,7 +11,10 @@ initializeApp();
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export const predict = onObjectFinalized(
-    {region: process.env.REGION},
+    {
+      bucket: process.env.BUCKET,
+      region: process.env.REGION,
+    },
     async (event: StorageEvent) => {
       const {bucket, name, contentType} = event.data;
 
