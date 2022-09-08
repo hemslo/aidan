@@ -29,7 +29,7 @@ export const predict = onObjectFinalized(
       const [response] = await client.predict({
         name: client.modelPath(
         process.env.PROJECT_ID!,
-        process.env.REGION!,
+        process.env.LOCATION!,
         process.env.MODEL_ID!,
         ),
         payload: {
