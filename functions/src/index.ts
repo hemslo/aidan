@@ -14,6 +14,8 @@ initializeApp();
 
 let imageClassificationModel: ImageClassificationModel | undefined;
 
+const MODEL_PATH = "models/latest";
+
 const waitForDoc = (doc: FirebaseFirestore.DocumentReference) =>
   new Promise<FirebaseFirestore.DocumentSnapshot<
     FirebaseFirestore.DocumentData>>(
@@ -29,7 +31,7 @@ const waitForDoc = (doc: FirebaseFirestore.DocumentReference) =>
 
 const downloadModel = async (bucket: string) => {
   const bucketRef = getStorage().bucket(bucket);
-  const [files] = await bucketRef.getFiles({prefix: process.env.MODEL_PATH});
+  const [files] = await bucketRef.getFiles({prefix: MODEL_PATH});
   await Promise.all(files.map((file) => {
     const destination = join(tmpdir(), basename(file.name));
     debug(`Downloading model ${destination}`);
