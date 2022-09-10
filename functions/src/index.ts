@@ -21,6 +21,49 @@ const waitForDoc = (doc: FirebaseFirestore.DocumentReference) =>
           });
         });
 
+const download = async (bucket: string, name: string) => {
+  const [image] = await getStorage().bucket(bucket).file(name!).download();
+  return image;
+};
+
+const predictLabel = async (image: Buffer) => {
+  const client = new v1beta1.PredictionServiceClient();
+  const [response] = await client.predict({
+    name: client.modelPath(
+        process.env.PROJECT_ID!,
+        process.env.LOCATION!,
+        process.env.MODEL_ID!,
+    ),
+    payload: {
+      image: {
+        imageBytes: image.toString("base64"),
+      },
+    },
+  });
+  log("Prediction response", response);
+  const result = response.payload?.sort(
+      (a, b) => b.classification!.score! - a.classification!.score!,
+  )[0];
+  return result;
+};
+
+const savePrediction = async (
+    id: string,
+    prediction: string,
+    score: number,
+) => {
+  const snapshotsCollection = getFirestore().collection("snapshots");
+  const docRef = snapshotsCollection.doc(id);
+
+  const doc = await waitForDoc(docRef);
+  log("Document data", doc.data());
+
+  await docRef.set({
+    prediction,
+    score,
+  }, {merge: true});
+};
+
 export const predict = onObjectFinalized(
     {
       region: "us-west1",
@@ -33,43 +76,19 @@ export const predict = onObjectFinalized(
         return;
       }
 
-      const [image] = await getStorage().bucket(bucket).file(name!).download();
-      log("Image downloaded: ", name);
+      const image = await download(bucket!, name!);
+      log("Image downloaded", name);
 
-      const client = new v1beta1.PredictionServiceClient();
-      const [response] = await client.predict({
-        name: client.modelPath(
-        process.env.PROJECT_ID!,
-        process.env.LOCATION!,
-        process.env.MODEL_ID!,
-        ),
-        payload: {
-          image: {
-            imageBytes: image.toString("base64"),
-          },
-        },
-      });
-      log("Prediction response", response);
-      const result = response.payload?.sort(
-          (a, b) => b.classification!.score! - a.classification!.score!,
-      )[0];
-
+      const result = await predictLabel(image);
       if (!result) {
         return;
       }
+      log(`Prediction result for ${name}`, result);
 
-      log("Prediction result", result);
-
-      const snapshotsCollection = getFirestore().collection("snapshots");
-      const docRef = snapshotsCollection.doc(basename(name!));
-
-      const doc = await waitForDoc(docRef);
-      log("Document data", doc.data());
-
-      await docRef.set({
-        prediction: result.displayName,
-        score: result.classification!.score,
-      }, {merge: true});
-
+      await savePrediction(
+          basename(name!),
+         result.displayName!,
+         result.classification!.score!,
+      );
       log("Prediction saved", name);
     });
