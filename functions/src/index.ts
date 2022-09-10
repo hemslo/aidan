@@ -95,6 +95,7 @@ const prepareImage = async (bucket: string, name: string) => {
 export const predict = onObjectFinalized(
     {
       region: "us-west1",
+      memory: "512MiB",
     },
     async (event: StorageEvent) => {
       const {bucket, name, contentType} = event.data;
