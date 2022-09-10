@@ -8,7 +8,18 @@ import {v1beta1} from "@google-cloud/automl";
 
 initializeApp();
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const waitForDoc = (doc: FirebaseFirestore.DocumentReference) =>
+  new Promise<FirebaseFirestore.DocumentSnapshot<
+    FirebaseFirestore.DocumentData>>(
+        (r) => {
+          log("Waiting for doc to be created...");
+          const unsubscribe = doc.onSnapshot((snapshot) => {
+            if (snapshot.exists) {
+              r(snapshot);
+              unsubscribe();
+            }
+          });
+        });
 
 export const predict = onObjectFinalized(
     {
@@ -52,12 +63,7 @@ export const predict = onObjectFinalized(
       const snapshotsCollection = getFirestore().collection("snapshots");
       const docRef = snapshotsCollection.doc(basename(name!));
 
-      let doc = await docRef.get();
-      while (!doc.exists) {
-        log("Waiting 1s for snapshot to be created...");
-        await sleep(1000);
-        doc = await docRef.get();
-      }
+      const doc = await waitForDoc(docRef);
       log("Document data", doc.data());
 
       await docRef.set({
