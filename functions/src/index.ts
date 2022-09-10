@@ -111,6 +111,9 @@ export const predict = onObjectFinalized(
       ]);
 
       const result = await predictLabel(image, model);
+
+      image.dispose();
+
       if (!result) {
         return;
       }
