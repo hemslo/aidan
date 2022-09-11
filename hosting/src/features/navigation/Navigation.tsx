@@ -13,14 +13,14 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
-import { clearState } from '../../localstorage';
-import { useAuth, useSigninCheck } from 'reactfire';
-import { useState, MouseEvent, useCallback } from 'react';
+import {clearState} from '../../localstorage';
+import {useAuth, useSigninCheck} from 'reactfire';
+import {MouseEvent, useCallback, useState} from 'react';
 import logo from '../../logo.svg';
 
 const UserMenu = () => {
     const auth = useAuth();
-    const { status, data: signinResult } = useSigninCheck();
+    const {status, data: signinResult} = useSigninCheck();
 
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 
@@ -39,9 +39,9 @@ const UserMenu = () => {
     };
 
     if (status === 'loading') {
-        return (<CircularProgress color="secondary" />);
+        return (<CircularProgress color="secondary"/>);
     }
-    const { user, signedIn } = signinResult;
+    const {user, signedIn} = signinResult;
     if (signedIn && user) {
         return (
             <div>
@@ -54,8 +54,8 @@ const UserMenu = () => {
                     color="inherit"
                 >
                     {user.photoURL && user.displayName
-                        ? <Avatar alt={user.displayName} src={user.photoURL} />
-                        : <AccountCircleIcon />}
+                        ? <Avatar alt={user.displayName} src={user.photoURL}/>
+                        : <AccountCircleIcon/>}
                 </IconButton>
                 <Menu
                     id="menu-appbar"
@@ -87,7 +87,7 @@ const Brand = () => (
         href="/"
         sx={{
             mr: 2,
-            display: { xs: 'none', md: 'flex' },
+            display: {xs: 'none', md: 'flex'},
             letterSpacing: '.3rem',
             color: 'inherit',
             textDecoration: 'none',
@@ -97,7 +97,7 @@ const Brand = () => (
             sx={{
                 height: 32,
                 mr: 2,
-                display: { xs: 'none', md: 'flex' },
+                display: {xs: 'none', md: 'flex'},
             }}
             alt="Aidan's logo"
             src={logo}
@@ -106,16 +106,16 @@ const Brand = () => (
     </Typography>
 );
 
-const NavItems = () => (<Box sx={{ flexGrow: 1, display: 'flex' }}>
-    <List sx={{ display: 'flex' }}>
+const NavItems = () => (<Box sx={{flexGrow: 1, display: 'flex'}}>
+    <List sx={{display: 'flex'}}>
         <ListItem key='Live' disablePadding>
             <ListItemButton href='/'>
-                <ListItemText primary='Live' />
+                <ListItemText primary='Live'/>
             </ListItemButton>
         </ListItem>
         <ListItem key='Dashboard' disablePadding>
             <ListItemButton href='/dashboard'>
-                <ListItemText primary='Dashboard' />
+                <ListItemText primary='Dashboard'/>
             </ListItemButton>
         </ListItem>
     </List>
@@ -126,11 +126,11 @@ export const Navigation = () => {
     return (
         <AppBar component="nav">
             <Toolbar>
-                <Brand />
-                <Divider />
-                <NavItems />
-                <Divider />
-                <UserMenu />
+                <Brand/>
+                <Divider/>
+                <NavItems/>
+                <Divider/>
+                <UserMenu/>
             </Toolbar>
         </AppBar>
     );

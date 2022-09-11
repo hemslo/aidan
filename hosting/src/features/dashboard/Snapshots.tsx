@@ -15,37 +15,47 @@ import RadioGroup from '@mui/material/RadioGroup';
 import Stack from "@mui/material/Stack";
 import Switch from '@mui/material/Switch';
 import TextField from "@mui/material/TextField";
-import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
-import { Snapshot } from "../camera/Camera";
-import { query, orderBy, limit, deleteDoc, doc, where, CollectionReference, DocumentData, updateDoc } from "firebase/firestore";
-import { deleteObject, ref } from "firebase/storage";
-import { ChangeEvent, useCallback, useMemo, useState } from "react";
-import { useFirestoreCollectionData, useStorage, useStorageDownloadURL } from "reactfire";
+import {DateTimePicker} from '@mui/x-date-pickers/DateTimePicker';
+import {Snapshot} from "../camera/Camera";
+import {
+    CollectionReference,
+    deleteDoc,
+    doc,
+    DocumentData,
+    limit,
+    orderBy,
+    query,
+    updateDoc,
+    where
+} from "firebase/firestore";
+import {deleteObject, ref} from "firebase/storage";
+import {ChangeEvent, useCallback, useMemo, useState} from "react";
+import {useFirestoreCollectionData, useStorage, useStorageDownloadURL} from "reactfire";
 
-const DownloadImage = ({ snapshot }: { snapshot: Snapshot }) => {
+const DownloadImage = ({snapshot}: { snapshot: Snapshot }) => {
     const storage = useStorage();
     const snapshotRef = ref(storage, snapshot.imageGcsUri);
-    const { status, data: imageURL } = useStorageDownloadURL(snapshotRef);
+    const {status, data: imageURL} = useStorageDownloadURL(snapshotRef);
     if (status === 'loading') {
-        return <CircularProgress />;
+        return <CircularProgress/>;
     }
-    return <img src={imageURL} alt={snapshot.id} width="100%" loading="lazy" />;
+    return <img src={imageURL} alt={snapshot.id} width="100%" loading="lazy"/>;
 };
 
 const SnapshotImageActions = ({
-    handleDeleteSnapshot,
-    disableDelete,
-    handleLabelChange,
-    label,
-    labels,
-}: {
+                                  handleDeleteSnapshot,
+                                  disableDelete,
+                                  handleLabelChange,
+                                  label,
+                                  labels,
+                              }: {
     handleDeleteSnapshot: () => Promise<void>,
     disableDelete: boolean,
     handleLabelChange: (event: ChangeEvent<HTMLInputElement>) => Promise<void>,
     label?: string,
     labels: DocumentData[],
 }) => {
-    return (<Stack direction="row" spacing={2} sx={{ m: 1 }}>
+    return (<Stack direction="row" spacing={2} sx={{m: 1}}>
         <FormControl fullWidth>
             <RadioGroup
                 row
@@ -57,14 +67,14 @@ const SnapshotImageActions = ({
             >
                 <FormControlLabel
                     value=""
-                    control={<Radio />}
+                    control={<Radio/>}
                     label="None"
                     key="none"
                     labelPlacement="top"
                 />
                 {labels.map((label) => <FormControlLabel
                     key={label.id}
-                    control={<Radio />}
+                    control={<Radio/>}
                     value={label.name}
                     label={label.name}
                     labelPlacement="top"
@@ -72,7 +82,7 @@ const SnapshotImageActions = ({
             </RadioGroup>
         </FormControl>
         <Button
-            startIcon={<DeleteIcon />}
+            startIcon={<DeleteIcon/>}
             onClick={handleDeleteSnapshot}
             disabled={disableDelete}
         >
@@ -89,12 +99,12 @@ const getSnapshotPrediction = (snapshot: Snapshot) => {
 };
 
 const SnapshotImage = ({
-    snapshot,
-    deleteSnapshot,
-    updateSnapshotLabel,
-    canEdit,
-    labels,
-}: {
+                           snapshot,
+                           deleteSnapshot,
+                           updateSnapshotLabel,
+                           canEdit,
+                           labels,
+                       }: {
     snapshot: Snapshot,
     deleteSnapshot: (snapshot: Snapshot) => Promise<void>,
     updateSnapshotLabel: (snapshot: Snapshot, label?: string) => Promise<void>,
@@ -115,7 +125,7 @@ const SnapshotImage = ({
 
     return (
         <>
-            {disableDelete ? <CircularProgress /> : <DownloadImage snapshot={snapshot} />}
+            {disableDelete ? <CircularProgress/> : <DownloadImage snapshot={snapshot}/>}
             <ImageListItemBar
                 title={snapshot.id}
                 subtitle={getSnapshotPrediction(snapshot)}
@@ -133,10 +143,10 @@ const SnapshotImage = ({
 };
 
 export const Snapshots = ({
-    canEdit,
-    snapshotsCollection,
-    labels,
-}: {
+                              canEdit,
+                              snapshotsCollection,
+                              labels,
+                          }: {
     canEdit: boolean,
     snapshotsCollection: CollectionReference<DocumentData>,
     labels: DocumentData[],
@@ -170,14 +180,14 @@ export const Snapshots = ({
     }, [snapshotsCollection, storage]);
 
     const updateSnapshotLabel = useCallback(async (snapshot: Snapshot, label?: string) => {
-        await updateDoc(doc(snapshotsCollection, snapshot.id), { label });
+        await updateDoc(doc(snapshotsCollection, snapshot.id), {label});
     }, [snapshotsCollection]);
 
     const handleDescChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setDesc(event.target.checked);
     }, []);
 
-    const { status, data: snapshots } = useFirestoreCollectionData(snapshotsQuery, { idField: 'id' });
+    const {status, data: snapshots} = useFirestoreCollectionData(snapshotsQuery, {idField: 'id'});
 
     const handleNextPage = useCallback(() => {
         if (snapshots.length > 0) {
@@ -206,14 +216,14 @@ export const Snapshots = ({
     }, [snapshots, desc]);
 
     if (status === 'loading') {
-        return <CircularProgress />;
+        return <CircularProgress/>;
     }
 
     return (
         <>
-            <Container sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Container sx={{display: 'flex', justifyContent: 'center'}}>
                 <Button
-                    startIcon={<NavigateBeforeIcon />}
+                    startIcon={<NavigateBeforeIcon/>}
                     onClick={handlePrevPage}
                     disabled={snapshots.length === 0}
                 >Prev Page</Button>
@@ -235,14 +245,14 @@ export const Snapshots = ({
                 <FormControl component="fieldset" variant="standard">
                     <FormControlLabel
                         control={
-                            <Switch checked={desc} onChange={handleDescChange} />
+                            <Switch checked={desc} onChange={handleDescChange}/>
                         }
                         label="Descending"
                     />
                 </FormControl>
                 <Divider orientation="vertical" flexItem>-</Divider>
                 <Button
-                    startIcon={<NavigateNextIcon />}
+                    startIcon={<NavigateNextIcon/>}
                     onClick={handleNextPage}
                     disabled={snapshots.length === 0}
                 >Next Page</Button>
@@ -261,15 +271,15 @@ export const Snapshots = ({
                     </ImageListItem>))}
             </ImageList>
 
-            <Container sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Container sx={{display: 'flex', justifyContent: 'center'}}>
                 <Button
-                    startIcon={<NavigateBeforeIcon />}
+                    startIcon={<NavigateBeforeIcon/>}
                     onClick={handlePrevPage}
                     disabled={snapshots.length === 0}
                 >Prev Page</Button>
                 <Divider orientation="vertical" flexItem>-</Divider>
                 <Button
-                    startIcon={<NavigateNextIcon />}
+                    startIcon={<NavigateNextIcon/>}
                     onClick={handleNextPage}
                     disabled={snapshots.length === 0}
                 >Next Page</Button>

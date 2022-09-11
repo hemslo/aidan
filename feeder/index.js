@@ -24,13 +24,13 @@ const main = async () => {
     });
     const page = await browser.newPage();
     page.on('console', msg => console.log(`PAGE LOG: ${new Date().toISOString()} - ${msg.text()}`));
-    await page.goto(url, { waitUntil: 'networkidle2' });
+    await page.goto(url, {waitUntil: 'networkidle2'});
     await login(page);
     await toggleOnSnapshotSwitch(page);
 
     while (true) {
         await sleep(reloodInterval);
-        await page.reload({ waitUntil: 'networkidle2' });
+        await page.reload({waitUntil: 'networkidle2'});
         await toggleOnSnapshotSwitch(page);
     }
 };

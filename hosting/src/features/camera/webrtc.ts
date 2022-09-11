@@ -3,7 +3,7 @@ const localOfferOptions = {
     offerToReceiveAudio: true,
 };
 
-const servers = { 'sdpSemantics': 'unified-plan', 'iceServers': [] };
+const servers = {'sdpSemantics': 'unified-plan', 'iceServers': []};
 
 export class WebRTC {
     initialised = false;
@@ -21,8 +21,8 @@ export class WebRTC {
         }
         this.initialised = true;
         this.localPeerConnection.ondatachannel = this.receiveChannelCallback;
-        this.localPeerConnection.addTransceiver('audio', { direction: 'recvonly' });
-        this.localPeerConnection.addTransceiver('video', { direction: 'recvonly' });
+        this.localPeerConnection.addTransceiver('audio', {direction: 'recvonly'});
+        this.localPeerConnection.addTransceiver('video', {direction: 'recvonly'});
         this.localPeerConnection.createDataChannel('dataSendChannel');
         this.localPeerConnection.addEventListener('iceconnectionstatechange', this.handleIceConnectionStateChange);
         this.localPeerConnection.addEventListener('track', this.gotRemoteMediaTrack);
@@ -34,7 +34,7 @@ export class WebRTC {
     }
 
     async updateWebRTC(answerSdp: string) {
-        await this.localPeerConnection.setRemoteDescription({ "type": "answer", "sdp": answerSdp })
+        await this.localPeerConnection.setRemoteDescription({"type": "answer", "sdp": answerSdp})
     }
 
     async recreateOffer() {

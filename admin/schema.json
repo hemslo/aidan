@@ -1,24 +1,24 @@
 {
-    "fields": [
-        {
-            "name": "id",
-            "type": "string"
-        },
-        {
-            "name": "imageGcsUri",
-            "type": "string"
-        },
-        {
-            "name": "label",
-            "type": "string"
-        },
-        {
-            "name": "prediction",
-            "type": "string"
-        },
-        {
-            "name": "score",
-            "type": "number"
-        }
-    ]
+  "fields": [
+    {
+      "name": "id",
+      "type": "string"
+    },
+    {
+      "name": "imageGcsUri",
+      "type": "string"
+    },
+    {
+      "name": "label",
+      "type": "string"
+    },
+    {
+      "name": "prediction",
+      "type": "string"
+    },
+    {
+      "name": "score",
+      "type": "number"
+    }
+  ]
 }

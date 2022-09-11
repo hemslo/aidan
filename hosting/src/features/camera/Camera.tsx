@@ -8,17 +8,21 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Switch from '@mui/material/Switch';
 import Typography from "@mui/material/Typography";
-import { ListDevicesResponse, useGenerateWebRtcStreamQuery, useListDevicesQuery, useStopWebRtcStreamMutation } from "./sdmApi";
-import { WebRTC } from "./webrtc";
-import { doc, setDoc } from "firebase/firestore";
-import { ref, uploadString } from "firebase/storage";
-import { selectAccessToken, selectProjectId } from "../oauth2/oauth2Slice";
-import { selectDeviceId, selectMediaSessionId, updateDeviceId, updateMediaSessionId } from "./cameraSlice";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { useCallback, useState } from "react";
-import { useEffect, useRef } from "react";
-import { useFirestore, useSigninCheck, useStorage } from "reactfire";
-import { useInterval } from "usehooks-ts";
+import {
+    ListDevicesResponse,
+    useGenerateWebRtcStreamQuery,
+    useListDevicesQuery,
+    useStopWebRtcStreamMutation
+} from "./sdmApi";
+import {WebRTC} from "./webrtc";
+import {doc, setDoc} from "firebase/firestore";
+import {ref, uploadString} from "firebase/storage";
+import {selectAccessToken, selectProjectId} from "../oauth2/oauth2Slice";
+import {selectDeviceId, selectMediaSessionId, updateDeviceId, updateMediaSessionId} from "./cameraSlice";
+import {useAppDispatch, useAppSelector} from "../../app/hooks";
+import {useCallback, useEffect, useRef, useState} from "react";
+import {useFirestore, useSigninCheck, useStorage} from "reactfire";
+import {useInterval} from "usehooks-ts";
 
 
 const REGENERATE_WEBRTC_STREAM_INTERVAL = 5 * 60 * 1000;
@@ -30,7 +34,7 @@ export interface Snapshot {
     label?: string;
     prediction?: string;
     score?: number;
-};
+}
 
 const getCameraDeviceId = (response?: ListDevicesResponse) => {
     if (!response) {
@@ -62,7 +66,7 @@ export function Camera() {
     const storage = useStorage();
     const firestore = useFirestore();
 
-    const { data: listDevicesResponse } = useListDevicesQuery(projectId, { skip: !projectId || !accessToken });
+    const {data: listDevicesResponse} = useListDevicesQuery(projectId, {skip: !projectId || !accessToken});
 
     useEffect(() => {
         if (listDevicesResponse) {
@@ -86,7 +90,7 @@ export function Camera() {
         webRTC.current.createOffer();
     }, [webRTC]);
 
-    const { data: generateWebRtcStreamResponse } = useGenerateWebRtcStreamQuery({
+    const {data: generateWebRtcStreamResponse} = useGenerateWebRtcStreamQuery({
         projectId,
         deviceId,
         offerSdp: webRTC.current.offer?.sdp!
@@ -123,7 +127,7 @@ export function Camera() {
         }
     }, REGENERATE_WEBRTC_STREAM_INTERVAL);
 
-    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
+    const {data: signInCheckResult} = useSigninCheck({requiredClaims: {write: 'true'}});
     const [enableSnapshot, setEnableSnapshot] = useState(false);
     const handleSnapshotSwitch = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEnableSnapshot(event.target.checked);
@@ -141,7 +145,7 @@ export function Camera() {
             await uploadString(snapshotRef, snapshot, 'data_url');
             await setDoc(
                 doc(firestore, 'snapshots', filename),
-                { id: filename, imageGcsUri: snapshotRef.toString() },
+                {id: filename, imageGcsUri: snapshotRef.toString()},
             );
             console.log(`${filename} uploaded to ${snapshotRef}`);
         }
@@ -171,11 +175,11 @@ export function Camera() {
                             control={<Switch
                                 id="snapshot-switch"
                                 checked={enableSnapshot}
-                                onChange={handleSnapshotSwitch} />}
-                            label={`Take snapshot every ${SNAPSHOT_INTERVAL / 1000}s`} />
+                                onChange={handleSnapshotSwitch}/>}
+                            label={`Take snapshot every ${SNAPSHOT_INTERVAL / 1000}s`}/>
                     </FormGroup>
                     <Button
-                        startIcon={<CameraIcon />}
+                        startIcon={<CameraIcon/>}
                         onClick={handleSnapshot}>
                         Snapshot
                     </Button>
@@ -183,4 +187,4 @@ export function Camera() {
             )}
         </Card>
     );
-};
+}

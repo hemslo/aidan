@@ -1,10 +1,8 @@
-import {
-    useLocation, useNavigate
-} from 'react-router-dom';
+import {useLocation, useNavigate} from 'react-router-dom';
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
-import { useAppSelector, useAppDispatch } from '../../app/hooks';
+import {useAppDispatch, useAppSelector} from '../../app/hooks';
 import {
     loadState,
     OAuth2State,
@@ -22,10 +20,10 @@ import {
     updateCode,
     updateProjectId,
 } from './oauth2Slice';
-import { useEffect } from 'react';
-import { useGetAccessTokenQuery } from './oauth2Api';
-import { useFirestore, useFirestoreDocData, useSigninCheck } from 'reactfire';
-import { doc } from 'firebase/firestore';
+import {useEffect} from 'react';
+import {useGetAccessTokenQuery} from './oauth2Api';
+import {useFirestore, useFirestoreDocData, useSigninCheck} from 'reactfire';
+import {doc} from 'firebase/firestore';
 
 const OAUTH_SCOPE = 'https://www.googleapis.com/auth/sdm.service';
 const OAUTH_ENDPOINT = 'https://nestservices.google.com/partnerconnections/';
@@ -44,7 +42,7 @@ export function OAuth2() {
     const firestore = useFirestore();
 
     const ref = doc(firestore, 'oauth2', 'state');
-    const { status: oauth2Status, data: oauth2State } = useFirestoreDocData(ref);
+    const {status: oauth2Status, data: oauth2State} = useFirestoreDocData(ref);
 
     useEffect(() => {
         if (oauth2Status !== 'loading' && oauth2State) {
@@ -52,7 +50,7 @@ export function OAuth2() {
         }
     }, [oauth2Status, oauth2State, dispatch]);
 
-    const { search } = useLocation();
+    const {search} = useLocation();
 
     useEffect(() => {
         if (search) {
@@ -64,12 +62,12 @@ export function OAuth2() {
     const redirectUri = window.location.origin + '/auth';
     const oauthEndpoint = OAUTH_ENDPOINT + projectId + '/auth';
 
-    const { data: oAuth2AccessTokenResponse } = useGetAccessTokenQuery({
+    const {data: oAuth2AccessTokenResponse} = useGetAccessTokenQuery({
         clientId,
         clientSecret,
         code,
         redirectUri,
-    }, { skip: !code || !clientId || !clientSecret || !redirectUri });
+    }, {skip: !code || !clientId || !clientSecret || !redirectUri});
 
     useEffect(() => {
         if (oAuth2AccessTokenResponse) {
@@ -79,7 +77,7 @@ export function OAuth2() {
         }
     }, [oAuth2AccessTokenResponse, dispatch, navigate]);
 
-    const { data: signInCheckResult } = useSigninCheck({ requiredClaims: { write: 'true' } });
+    const {data: signInCheckResult} = useSigninCheck({requiredClaims: {write: 'true'}});
 
     return signInCheckResult?.hasRequiredClaims
         ? (
@@ -106,14 +104,14 @@ export function OAuth2() {
                     onChange={(e) => dispatch(updateProjectId(e.target.value))}
                 />
                 <form method="GET" action={oauthEndpoint} onSubmit={() => dispatch(saveOAuth2State(''))}>
-                    <input type="hidden" name="access_type" value="offline" />
-                    <input type="hidden" name="client_id" value={clientId} />
-                    <input type="hidden" name="include_granted_scopes" value="true" />
-                    <input type="hidden" name="prompt" value="consent" />
-                    <input type="hidden" name="redirect_uri" value={redirectUri} />
-                    <input type="hidden" name="response_type" value="code" />
-                    <input type="hidden" name="scope" value={OAUTH_SCOPE} />
-                    <input type="hidden" name="state" value="pass-through value" />
+                    <input type="hidden" name="access_type" value="offline"/>
+                    <input type="hidden" name="client_id" value={clientId}/>
+                    <input type="hidden" name="include_granted_scopes" value="true"/>
+                    <input type="hidden" name="prompt" value="consent"/>
+                    <input type="hidden" name="redirect_uri" value={redirectUri}/>
+                    <input type="hidden" name="response_type" value="code"/>
+                    <input type="hidden" name="scope" value={OAUTH_SCOPE}/>
+                    <input type="hidden" name="state" value="pass-through value"/>
                     <Button type="submit">Link</Button>
                 </form>
                 <TextField
@@ -140,4 +138,4 @@ export function OAuth2() {
             </Stack>
         )
         : (<></>);
-};
+}

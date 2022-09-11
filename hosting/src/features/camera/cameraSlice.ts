@@ -1,10 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "../../app/store";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {RootState} from "../../app/store";
 
 export interface CameraState {
     deviceId: string;
     mediaSessionId: string;
-};
+}
 
 const initialState = {
     deviceId: '',
@@ -14,7 +14,7 @@ const initialState = {
 export interface GenerateWebRtcStreamResponsePayload {
     answerSdp: string;
     mediaSessionId: string;
-};
+}
 
 export const cameraSlice = createSlice({
     name: 'camera',
@@ -29,7 +29,7 @@ export const cameraSlice = createSlice({
     },
 });
 
-export const { updateDeviceId, updateMediaSessionId } = cameraSlice.actions;
+export const {updateDeviceId, updateMediaSessionId} = cameraSlice.actions;
 
 export const selectDeviceId = (state: RootState) => state.camera.deviceId;
 

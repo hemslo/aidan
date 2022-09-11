@@ -1,14 +1,14 @@
 import Chip from "@mui/material/Chip";
 import Stack from "@mui/material/Stack";
 import TextField from "@mui/material/TextField";
-import { deleteDoc, doc, addDoc, CollectionReference, DocumentData } from "firebase/firestore";
-import { useCallback, useState } from "react";
+import {addDoc, CollectionReference, deleteDoc, doc, DocumentData} from "firebase/firestore";
+import {useCallback, useState} from "react";
 
 export const Labels = ({
-    canEdit,
-    labels,
-    labelsCollection,
-}: {
+                           canEdit,
+                           labels,
+                           labelsCollection,
+                       }: {
     canEdit: boolean,
     labels: DocumentData[],
     labelsCollection: CollectionReference<DocumentData>,
@@ -21,7 +21,7 @@ export const Labels = ({
 
     const handleLabelKeyDown = useCallback(async (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'Enter') {
-            await addDoc(labelsCollection, { name: label });
+            await addDoc(labelsCollection, {name: label});
             setLabel('');
         }
     }, [labelsCollection, label]);

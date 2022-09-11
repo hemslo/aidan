@@ -1,9 +1,9 @@
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { getApp } from 'firebase/app';
-import { doc, getFirestore, setDoc } from 'firebase/firestore';
-import { RootState } from '../../app/store';
-import { saveState } from '../../localstorage';
-import { OAuth2AccessTokenResponse, OAuth2RefreshTokenResponse } from './oauth2Api';
+import {createAsyncThunk, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {getApp} from 'firebase/app';
+import {doc, getFirestore, setDoc} from 'firebase/firestore';
+import {RootState} from '../../app/store';
+import {saveState} from '../../localstorage';
+import {OAuth2AccessTokenResponse, OAuth2RefreshTokenResponse} from './oauth2Api';
 
 export interface OAuth2State {
     clientId: string;
@@ -13,7 +13,7 @@ export interface OAuth2State {
     access_token: string;
     expires_at: number;
     refresh_token: string;
-};
+}
 
 const initialState: OAuth2State = {
     clientId: '',
@@ -29,7 +29,7 @@ export const saveOAuth2State = createAsyncThunk(
     'oauth2/saveState',
     async (_: string, thunkAPI) => {
         const state = thunkAPI.getState() as RootState;
-        saveState({ oauth2: state.oauth2 })
+        saveState({oauth2: state.oauth2})
         const db = getFirestore(getApp());
         try {
             await setDoc(doc(db, 'oauth2', 'state'), state.oauth2);

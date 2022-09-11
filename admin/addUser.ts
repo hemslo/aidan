@@ -1,6 +1,6 @@
-import { credential } from 'firebase-admin';
-import { initializeApp } from 'firebase-admin/app';
-import { getAuth } from 'firebase-admin/auth';
+import {credential} from 'firebase-admin';
+import {initializeApp} from 'firebase-admin/app';
+import {getAuth} from 'firebase-admin/auth';
 import serviceAccount from './serviceAccountKey.json';
 
 const main = async () => {
