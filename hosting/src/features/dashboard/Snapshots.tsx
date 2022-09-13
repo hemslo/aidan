@@ -30,7 +30,11 @@ import {
 } from "firebase/firestore";
 import {deleteObject, ref} from "firebase/storage";
 import {ChangeEvent, useCallback, useMemo, useState} from "react";
+import ClearIcon from '@mui/icons-material/Clear';
 import {useFirestoreCollectionData, useStorage, useStorageDownloadURL} from "reactfire";
+import {ErrorBoundary} from 'react-error-boundary';
+
+const DeletedImage = () => (<ClearIcon/>);
 
 const DownloadImage = ({snapshot}: { snapshot: Snapshot }) => {
     const storage = useStorage();
@@ -125,7 +129,11 @@ const SnapshotImage = ({
 
     return (
         <>
-            {disableDelete ? <CircularProgress/> : <DownloadImage snapshot={snapshot}/>}
+            {disableDelete
+                ? <CircularProgress/>
+                : <ErrorBoundary fallbackRender={DeletedImage}>
+                    <DownloadImage snapshot={snapshot}/>
+                </ErrorBoundary>}
             <ImageListItemBar
                 title={snapshot.id}
                 subtitle={getSnapshotPrediction(snapshot)}
