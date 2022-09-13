@@ -1,42 +1,49 @@
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
 import {AdapterDateFns} from '@mui/x-date-pickers/AdapterDateFns';
 import {AnalyticsProvider, AuthProvider, FirestoreProvider, StorageProvider, useFirebaseApp} from 'reactfire';
-import {Authentication, AuthWrapper} from './features/authentication/Authentication';
 import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {Navigation} from './features/navigation/Navigation';
-import {Outlet} from 'react-router-dom';
+import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import {getAuth} from 'firebase/auth';
 import {getFirestore} from 'firebase/firestore';
 import {getStorage} from 'firebase/storage';
 import {getAnalytics} from 'firebase/analytics';
+import {Provider} from "react-redux";
+import {store} from "./app/store";
+import CssBaseline from "@mui/material/CssBaseline";
+import {Live} from "./features/live/Live";
+import {OAuth2} from "./features/oauth2/OAuth2";
+import {Dashboard} from "./features/dashboard/Dashboard";
+import React from "react";
+import {Layout} from "./Layout";
 
 export const App = () => {
     const firebaseApp = useFirebaseApp();
     const auth = getAuth(firebaseApp);
     const firestoreInstance = getFirestore(firebaseApp);
     const storageInstance = getStorage(firebaseApp);
+    const analytics = getAnalytics(firebaseApp);
 
     return (
-        <AnalyticsProvider sdk={getAnalytics(firebaseApp)}>
-            <AuthProvider sdk={auth}>
-                <FirestoreProvider sdk={firestoreInstance}>
-                    <StorageProvider sdk={storageInstance}>
-                        <LocalizationProvider dateAdapter={AdapterDateFns}>
-                            <Box sx={{display: 'flex'}}>
-                                <Navigation/>
-                                <Box component="main" sx={{p: 3, width: 1}}>
-                                    <Toolbar/>
-                                    <Authentication/>
-                                    <AuthWrapper fallback={<></>}>
-                                        <Outlet/>
-                                    </AuthWrapper>
-                                </Box>
-                            </Box>
-                        </LocalizationProvider>
-                    </StorageProvider>
-                </FirestoreProvider>
-            </AuthProvider>
-        </AnalyticsProvider>
+        <Provider store={store}>
+            <CssBaseline/>
+            <AnalyticsProvider sdk={analytics}>
+                <AuthProvider sdk={auth}>
+                    <FirestoreProvider sdk={firestoreInstance}>
+                        <StorageProvider sdk={storageInstance}>
+                            <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                <BrowserRouter>
+                                    <Routes>
+                                        <Route path="/" element={<Layout/>}>
+                                            <Route index element={<Live/>}/>
+                                            <Route path="auth" element={<OAuth2/>}/>
+                                            <Route path="dashboard" element={<Dashboard/>}/>
+                                        </Route>
+                                    </Routes>
+                                </BrowserRouter>
+                            </LocalizationProvider>
+                        </StorageProvider>
+                    </FirestoreProvider>
+                </AuthProvider>
+            </AnalyticsProvider>
+        </Provider>
     );
 };
