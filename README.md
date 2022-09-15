@@ -8,7 +8,9 @@ Aidan is a tool for detecting image classifications captured by Nest Cam.
 
 A typical usage is to detect baby needs, such as diaper change, feeding,
 or sleeping. It can act as a smart baby monitor.
-
+See this blog for details:
+[How I built a smart baby monitor using (misusing) Google Cloud with almost no cost](
+https://hemslo.io/how-i-built-a-smart-baby-monitor-using-misusing-google-cloud-with-almost-no-cost/).
 
 ## How to use
 
