@@ -87,6 +87,22 @@ It's using puppeteer to take snapshots in a headless Chrome.
    docker run -d --name aidan-feeder --env-file .env ghcr.io/hemslo/aidan-feeder
     ```
 
+## Architecture
+
+```
+                 +---------------+     +-----------+
+                 | Cloud Storage |  -  | Cloud Run |
+                 +---------------+     +-----------+
+                         |                   |
++----------+   +------------------+   +-----------+   +----------+   +---------------+
+| Nest Cam | - | Firebase Hosting | - | Firestore | - | BigQuery | - | AutoML Vision |
++----------+   +------------------+   +-----------+   +----------+   +---------------+
+                         |
+                   +-----------+
+                   | Puppeteer |
+                   +-----------+
+```
+
 ## Screenshots
 
 ![Live](doc/live.png)
